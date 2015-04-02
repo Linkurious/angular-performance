@@ -1,9 +1,9 @@
 'use strict';
 
 chrome.devtools.panels.create(
-  "Angular Performance",
+  "Angular",
   "img/AngularJS-Shield-small.png",
-  "src/index.html",
+  "src/panel/panel.html",
   function() {
 
   }

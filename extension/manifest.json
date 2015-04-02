@@ -24,7 +24,7 @@
   "content_scripts": [
     {
       "matches": ["http://*/*", "https://*/*"],
-      "js": ["src/inspector.js"]
+      "js": ["src/injected/inspector.js"]
     }
   ]
 }
