@@ -1,0 +1,30 @@
+{
+  "name": "__MSG_extName__",
+  "version": "0.0.1",
+  "manifest_version": 2,
+  "default_locale": "en",
+  "author": "Nicolas Joseph",
+  "icons": {
+    "16": "images/AngularJS-Shield-small.png",
+    "48": "images/AngularJS-Shield-small.png",
+    "128": "images/AngularJS-Shield-small.png"
+  },
+  "devtools_page": "src/devtools.html",
+  "page_action": {
+    "default_icon": {
+      "19": "images/AngularJS-Shield-small.png",
+      "38": "images/AngularJS-Shield-small.png"
+    },
+    "default_title": "__MSG_pageButtonTitle__"
+  },
+  "background": {
+    "scripts": ["src/background.js"],
+    "persistent": false
+  },
+  "content_scripts": [
+    {
+      "matches": ["http://*/*", "https://*/*"],
+      "js": ["src/inspector.js"]
+    }
+  ]
+}

@@ -1,0 +1,10 @@
+{
+  "extName": {
+    "message": "Angular-Performance",
+    "description": "Extension Name"
+  },
+  "pageButtonTitle": {
+    "message": "Angular Performance",
+    "description": "Page Button title"
+  }
+}
