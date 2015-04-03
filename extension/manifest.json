@@ -21,10 +21,7 @@
     "scripts": ["src/background.js"],
     "persistent": false
   },
-  "content_scripts": [
-    {
-      "matches": ["http://*/*", "https://*/*"],
-      "js": ["src/injected/inspector.js"]
-    }
+  "permissions": [
+    "http://*/*", "https://*/*", "tabs", "webNavigation"
   ]
 }
