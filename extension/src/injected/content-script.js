@@ -39,7 +39,6 @@ window.addEventListener('message', function(event) {
     return;
   }
 
-  log("Content script received", message);
   backgroundPageConnection.postMessage(message);
 }, false);
 

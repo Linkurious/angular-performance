@@ -9,7 +9,7 @@
     "48": "images/AngularJS-Shield-small.png",
     "128": "images/AngularJS-Shield-small.png"
   },
-  "devtools_page": "src/devtools.html",
+  "devtools_page": "src/devtools/devtools.html",
   "page_action": {
     "default_icon": {
       "19": "images/AngularJS-Shield-small.png",

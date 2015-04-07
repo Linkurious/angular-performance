@@ -1,24 +1,81 @@
 /*
  File that will be injected in the page by the content script in order to retrieve angular
  performance metrics.
+
+ Heavily inspired by:
+ - ng stats
  */
 (function() {
   'use strict';
   console.log('angular-performance - Inspector loaded into webpage');
 
   if (document.readyState === 'complete'){
-    console.log('ready state complete');
-    inspector();
+    console.log('Ready state complete');
+    detectAngular();
   } else {
-    console.log('ready state not complete');
-    window.onload(inspector)
+    console.log('Ready state not complete');
+    window.onload(detectAngular)
   }
 
-  function inspector(){
-    console.log('Sending devtools init message');
+  function detectAngular(){
+    if (typeof angular !== 'undefined') {
+
+      window.postMessage({
+        task: 'initDevToolPanel',
+        source: 'angular-performance'
+      }, '*');
+
+      bootstrapInspector();
+    }
+  }
+
+
+  function bootstrapInspector(){
+
+    console.log('inspector.js - bootstrapping application');
+
+    var $rootScope = getRootScope();
+    var scopePrototype = Object.getPrototypeOf($rootScope);
+    var oldDigest = scopePrototype.$digest;
+
+    scopePrototype.$digest = function $digest() {
+      var start = performance.now();
+      oldDigest.apply(this, arguments);
+      var time = (performance.now() - start);
+      report('DigestTiming', {
+        start: start,
+        time: time
+      });
+    };
+  }
+
+  /**
+   * Gets the angular root scope
+   *
+   * @returns {*}
+   */
+  function getRootScope(){
+    if (typeof $rootScope !== 'undefined') {
+      return $rootScope;
+    }
+    var scopeEl = document.querySelector('.ng-scope');
+    if (!scopeEl) {
+      return null;
+    }
+    return angular.element(scopeEl).scope().$root;
+  }
+
+  /**
+   * Reports a
+   *
+   * @param {String} variable - can be 'digestTiming'
+   * @param {Object} value    -  value to be registered with the variable
+   */
+  function report(variable, value){
     window.postMessage({
-      task: 'initDevToolPanel',
-      source: 'angular-performance'
+      source: 'angular-performance',
+      task: 'register'+variable,
+      data: value
     }, '*');
   }
 })();

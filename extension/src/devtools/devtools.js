@@ -26,14 +26,16 @@ function log(message, obj){
 
 backgroundPageConnection.onMessage.addListener(function (message) {
 
-  log('message received', message);
-
-  switch (message.task){
-    case 'initDevToolPanel':
-      buildAngularPanel();
-      break;
-    default:
-      log('Unknown task ', message.task);
+  if (message.task === 'initDevToolPanel'){
+    log('building panel');
+    chrome.devtools.panels.create(
+      'Angular',
+      'images/AngularJS-Shield-small.png',
+      'src/panel/panel.html'
+    );
+    backgroundPageConnection.disconnect();
+  } else {
+    log('Unknown task ', message.task);
   }
 });
 
@@ -45,17 +47,5 @@ backgroundPageConnection.postMessage({
 
 backgroundPageConnection.postMessage({
   task: 'injectContentScript',
-  tabId: chrome.devtools.inspectedWindow.tabId,
+  tabId: chrome.devtools.inspectedWindow.tabId
 });
-
-/**
- * Builds the angular panel in the chrome devtools
- */
-function buildAngularPanel(){
-  log('building panel');
-  chrome.devtools.panels.create(
-    'Angular',
-    'images/AngularJS-Shield-small.png',
-    'src/panel/panel.html'
-  );
-}
