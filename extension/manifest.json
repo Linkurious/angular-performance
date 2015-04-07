@@ -23,5 +23,8 @@
   },
   "permissions": [
     "http://*/*", "https://*/*", "tabs", "webNavigation"
+  ],
+  "web_accessible_resources": [
+    "src/injected/inspector.js"
   ]
 }

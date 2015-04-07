@@ -20,12 +20,16 @@ chrome.runtime.onConnect.addListener(function(port){
         connections[message.tabId] = port;
         break;
       case 'log':
-        console.log('devtools.js - ' + message.text, message.obj);
+        if (message.obj) {
+          console.log('devtools.js - ' + message.text, message.obj);
+        } else {
+          console.log('devtools.js - ' + message.text);
+        }
         break;
       case 'injectContentScript':
         console.log('devtools.js - Injecting content script');
         chrome.tabs.executeScript(message.tabId, {
-          file: 'src/injected/inspector.js',
+          file: 'src/injected/content-script.js'
         });
         break;
       default:
@@ -39,17 +43,23 @@ chrome.runtime.onConnect.addListener(function(port){
    *
    * @param {Object}        message       message sent from the devtools
    * @param {Object}        message.task  task to execute
-   * @param {MessageSender} sender        sender
+   * @param {Port}          port          port
    */
-  var contentScriptListener = function(message, sender){
+  var contentScriptListener = function(message, port){
+
+    var sender = port.sender;
 
     if(message.task === 'log'){
-      console.log('content-script.js - '+ message.text, message.obj);
+      if (message.obj) {
+        console.log('content-script.js - ' + message.text, message.obj);
+      } else {
+        console.log('content-script.js - ' + message.text);
+      }
       return;
     }
 
     if (sender.tab) {
-      console.log('Received content Script message', message);
+      console.log('background.js - Received content Script message', message);
       var tabId = sender.tab.id;
       if (tabId in connections) {
         connections[tabId].postMessage(message);

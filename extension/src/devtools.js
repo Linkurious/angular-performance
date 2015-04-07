@@ -12,11 +12,16 @@ var backgroundPageConnection = chrome.runtime.connect({
  * @param {Object} [obj]     - Object to log into the console.
  */
 function log(message, obj){
-  backgroundPageConnection.postMessage({
+  var logMessage = {
     task: 'log',
-    text: message,
-    obj: obj
-  });
+    text: message
+  };
+
+  if (!!obj){
+    logMessage.obj = obj;
+  }
+
+  backgroundPageConnection.postMessage(logMessage);
 }
 
 backgroundPageConnection.onMessage.addListener(function (message) {
@@ -51,6 +56,6 @@ function buildAngularPanel(){
   chrome.devtools.panels.create(
     'Angular',
     'images/AngularJS-Shield-small.png',
-    'panel/panel.html'
+    'src/panel/panel.html'
   );
 }
