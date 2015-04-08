@@ -43,7 +43,7 @@
       oldDigest.apply(this, arguments);
       var time = (performance.now() - start);
       report('DigestTiming', {
-        start: start,
+        start: Date.now(),
         time: time
       });
     };

@@ -10,7 +10,7 @@ function Registry(){
   var self = this;
 
   var
-    BUFFER_MAX_ELEMENT = 150;
+    BUFFER_MAX_ELEMENT = 300;
 
   var
     _digestTiming = [];
@@ -41,48 +41,31 @@ function Registry(){
   self.getDigestTimingPlotData = function(number, resolution){
 
     if (!number){
-      number = 100;
+      number = 300;
     }
     if (!resolution){
-      resolution = 50;
+      resolution = 100;
     }
 
     var
-      now = performance.now(),
-      index = number-1,
-      bin = 1,
-      sum = 0,
-      count = 0,
+      now = Date.now(),
       data = new Array(number);
 
-    data = _.map(data, function(item, index){return [index*resolution, 0]});
+    data = _.map(data, function(item, index){return [now - ((number - index - 1) * resolution), 0]});
 
-    for (var i = _digestTiming.length - 1; i > -1 && now - (number-1)*resolution < _digestTiming[i].timestamp; i-- ){
+    for (var i = _digestTiming.length - 1; i > -1 && now - ((number-1) * resolution) < _digestTiming[i].timestamp; i-- ){
 
-      console.log('Digest Loop time:',  now - _digestTiming[i].time);
-      console.log('Delta time ', now - _digestTiming[i].timestamp );
-      console.log('Delta bin ', bin * resolution);
+      for (var index = number - 1, bin = 0 ; index > -1 ; index--) {
+        if ((now - (resolution * (bin + 1)) < _digestTiming[i].timestamp &&
+          _digestTiming[i].timestamp < now - (resolution * bin))) {
 
-      if (now - (bin * resolution) < _digestTiming[i].timestamp ){
-        count++;
-        sum = sum + _digestTiming[i].time;
-
-      } else if (count !== 0){
-        data[index] = [(index-1)*resolution, sum/count];
-        index--;
-        bin++;
-        count = 0;
-        sum = 0;
-
-      } else {
-        index--;
-        bin++;
-        if (now - (bin * resolution) < _digestTiming[i].timestamp ){
-          count = 1;
-          sum = _digestTiming[i].time;
+          data[index] = [now - (resolution * bin), (data[index][1] + _digestTiming[i].time) / 2];
+          break;
         }
+        bin++;
       }
     }
+
 
     return data;
   };

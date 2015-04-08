@@ -6,24 +6,22 @@ var digestTimePlot = $.plot('#digest-time-chart', registry.getDigestTimingPlotDa
   series: {
     shadowSize: 0	// Drawing is faster without shadows
   },
-  yaxis: {
-    min: 0,
-    max: 100
-  },
   xaxis: {
-    show: false
+    mode: 'time'
   }
 });
+
 
 function updateDigestTimePlot(){
 
   var data = registry.getDigestTimingPlotData();
 
-  log('data:', data);
-
   digestTimePlot.setData([data]);
+  digestTimePlot.setupGrid();
   digestTimePlot.draw();
+
   setTimeout(updateDigestTimePlot, UPDATE_INTERVAL);
+
 }
 
 updateDigestTimePlot();
