@@ -30,7 +30,10 @@ backgroundPageConnection.onMessage.addListener(function(message){
   switch(message.task){
     case 'registerDigestTiming':
       updateDigestTimingInstantMetric(message.data.time);
-      registry.registerDigestTiming(message.data.start, message.data.time);
+      registry.registerDigestTiming(message.data.timestamp, message.data.time);
+      break;
+    case 'registerEvent':
+      registry.registerEvent(message.data.timestamp, message.data.event);
       break;
     default:
       log('Unknown task ', message.task);
@@ -52,7 +55,13 @@ function updateDigestTimingInstantMetric(time){
   $('#digestTimeInstant').text(Math.round(time));
 }
 
-var digestRateInterval = setInterval(function(){
+/**
+ * Updates the panel with the last second digest count
+ */
+function updateDigestCountInstantMetric(){
   $('#instantDigestRate').text(registry.getLastSecondDigestCount());
-}, 300);
+  setTimeout(updateDigestCountInstantMetric, 300);
+}
+updateDigestCountInstantMetric();
+
 

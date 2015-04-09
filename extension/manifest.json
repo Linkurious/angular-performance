@@ -21,9 +21,7 @@
     "scripts": ["src/background.js"],
     "persistent": false
   },
-  "permissions": [
-    "http://*/*", "https://*/*", "tabs", "webNavigation"
-  ],
+  "permissions": ["http://*/*", "https://*/*", "tabs", "webNavigation"],
   "web_accessible_resources": [
     "src/injected/inspector.js"
   ]

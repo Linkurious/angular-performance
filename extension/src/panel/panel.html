@@ -164,6 +164,10 @@
                 <div class="panel panel-default">
                     <div class="panel-heading">
                         <i class="fa fa-bar-chart-o fa-fw"></i> Digest time (ms)
+                        <div class="btn-group pull-right" role="group" aria-label="...">
+                            <button id="liveDigestTime" type="button" class="btn btn-default btn-xs active">Live</button>
+                            <button id="pauseDigestTime" type="button" class="btn btn-default btn-xs">Pause</button>
+                        </div>
                     </div>
                     <!-- /.panel-heading -->
                     <div class="panel-body">
@@ -181,11 +185,15 @@
             <div class="col-lg-12">
                 <div class="panel panel-default">
                     <div class="panel-heading">
-                        <i class="fa fa-bar-chart-o fa-fw"></i> Average Digest number
+                        <i class="fa fa-bar-chart-o fa-fw"></i> Average Digest count
+                        <div class="btn-group pull-right" role="group" aria-label="...">
+                            <button id="liveDigestCount" type="button" class="btn btn-default btn-xs active">Live</button>
+                            <button id="pauseDigestCount" type="button" class="btn btn-default btn-xs">Pause</button>
+                        </div>
                     </div>
                     <!-- /.panel-heading -->
                     <div class="panel-body">
-                        <div id="digest-frequency-number-chart"></div>
+                        <div id="digest-frequency-number-chart" style="height: 200px"></div>
                     </div>
                     <!-- /.panel-body -->
                 </div>
@@ -248,10 +256,10 @@
 <!-- Flot Charts JavaScript -->
 <script src="../../vendor/flot/excanvas.min.js"></script>
 <script src="../../vendor/flot/jquery.flot.js"></script>
-<script src="../../vendor/flot/jquery.flot.pie.js"></script>
 <script src="../../vendor/flot/jquery.flot.resize.js"></script>
 <script src="../../vendor/flot/jquery.flot.time.js"></script>
 <script src="../../vendor/flot.tooltip/js/jquery.flot.tooltip.min.js"></script>
+<script src="../../vendor/flot-events/jquery.flot.events.js"></script>
 
 <!-- Custom Theme JavaScript -->
 <script src="../sb-admin-2.js"></script>

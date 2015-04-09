@@ -4,9 +4,14 @@
 
  Heavily inspired by:
  - ng stats
+ - ng inspector
+ - Angular Inspector
+ - Batarang
+
  */
 (function() {
   'use strict';
+
   console.log('angular-performance - Inspector loaded into webpage');
 
   if (document.readyState === 'complete'){
@@ -43,7 +48,7 @@
       oldDigest.apply(this, arguments);
       var time = (performance.now() - start);
       report('DigestTiming', {
-        start: Date.now(),
+        timestamp: Date.now(),
         time: time
       });
     };
