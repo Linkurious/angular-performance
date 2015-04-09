@@ -2,36 +2,24 @@
 
 var
   UPDATE_INTERVAL = 1000,
-  EVENT_TYPES = [
-    {
-      eventType: "MOUSE_EVENT",
-      color: "red",
-      position: 'BOTTOM'
-    }, {
-      eventType: "TOUCH_EVENT",
-      color: "orange",
-      position: 'BOTTOM'
-    }, {
-      eventType: "KEYBOARD_EVENT",
-      color: "blue",
-      position: 'TOP'
-    }, {
-      eventType: "CONTROL_EVENT",
-      color: "green",
-      position: 'TOP'
-    }
-  ],
+  palette = new Rickshaw.Color.Palette( { scheme: 'classic9' }),
   // Declare plots
   plots = [
     {
-      id: '#digest-time-chart',
+      id: 'digest-time-chart',
+      eventTimelineId: 'digest-time-event-timeline',
+      rangeSliderId: 'digest-time-range-slider',
+      plotName: 'Digest time length',
       dataFunction: registry.getDigestTimingPlotData,
       pauseButton: '#pauseDigestTime',
       liveButton: '#liveDigestTime',
       live: true
     },
     {
-      id: '#digest-frequency-number-chart',
+      id: 'digest-rate-chart',
+      eventTimelineId: 'digest-rate-event-timeline',
+      rangeSliderId: 'digest-rate-range-slider',
+      plotName: 'Digest count',
       dataFunction: registry.getDigestRatePlotData,
       pauseButton: '#pauseDigestCount',
       liveButton: '#liveDigestCount',
@@ -41,6 +29,7 @@ var
 // Execute plots
 _.forEach(plots, function(plot){
 
+  // Controls of the start en end date
   $(plot.liveButton).click(function(){
     plot.live = true;
     $(plot.pauseButton).removeClass('active');
@@ -54,41 +43,55 @@ _.forEach(plots, function(plot){
     $(plot.pauseButton).addClass('active');
   });
 
-  var data = plot.dataFunction();
-
-  plot.instance = $.plot(plot.id, [data], {
-    series: {
-      shadowSize: 0	// Drawing is faster without shadows
-    },
-    events: {
-      data: registry.getEventPlotData(data),
-      types: EVENT_TYPES
-    },
-    xaxis: {
-      mode: 'time'
-    },
-    grid: {
-      hoverable: true
-    }
+  // Graph instantiation
+  plot.instance = new Rickshaw.Graph({
+    element: document.getElementById(plot.id),
+    renderer: 'line',
+    stroke: true,
+    preserve: true,
+    series: [
+      {
+        color: palette.color(),
+        data:  plot.dataFunction(),
+        name: plot.plotName
+      }
+    ]
   });
+
+  plot.slider = new Rickshaw.Graph.RangeSlider.Preview({
+    graph: plot.instance,
+    element: document.getElementById(plot.rangeSliderId)
+  });
+
+  plot.instance.render();
+
+  plot.annotator = new Rickshaw.Graph.Annotate( {
+    graph: plot.instance,
+    element: document.getElementById(plot.eventTimelineId)
+  });
+
+  plot.xAxis = new Rickshaw.Graph.Axis.Time( {
+    graph: plot.instance,
+    timeFixture: new Rickshaw.Fixtures.Time.Local()
+  });
+
+  plot.xAxis.render();
+
+  plot.yAxis = new Rickshaw.Graph.Axis.Y( {
+    graph: plot.instance,
+    tickFormat: Rickshaw.Fixtures.Number.formatKMBT
+  });
+
+  plot.yAxis.render();
 
   plot.updateFunction = function(){
 
-    var
-      data = plot.dataFunction(),
-      events = registry.getEventPlotData(data);
-
-    console.log(plot.id+' event count: ', events.length);
-
-    plot.instance.setData([data]);
-    plot.instance.setEvents(events);
-
-    var ref = performance.now();
-
-    plot.instance.setupGrid();
-    plot.instance.draw();
-
-    console.log(plot.id+' draw time (grid+draw): ', performance.now() - ref);
+    _.forEach(registry.getLastEventAnnotatorData(plot.id), function(event){
+      plot.annotator.add(event.timestamp, event.message);
+    });
+    plot.annotator.update();
+    plot.dataFunction();
+    plot.instance.update();
 
     if (plot.live) {
       setTimeout(plot.updateFunction, UPDATE_INTERVAL);

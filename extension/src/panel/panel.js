@@ -56,7 +56,7 @@ function updateDigestTimingInstantMetric(time){
 }
 
 /**
- * Updates the panel with the last second digest count
+ * Updates the panel with the last secon
  */
 function updateDigestCountInstantMetric(){
   $('#instantDigestRate').text(registry.getLastSecondDigestCount());

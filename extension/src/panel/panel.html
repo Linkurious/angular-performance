@@ -23,11 +23,15 @@
     <!-- Custom CSS -->
     <link href="../../css/sb-admin-2.css" rel="stylesheet">
 
-    <!-- Morris Charts CSS -->
-    <link href="../../vendor/morrisjs/morris.css" rel="stylesheet">
+    <!-- jQuery ui css -->
+    <link href="../../vendor/jqueryui/themes/base/jquery-ui.min.css">
+
+    <!-- Rickshaw Charts CSS -->
+    <link href="./rickshaw.min.css" rel="stylesheet">
 
     <!-- Custom Fonts -->
     <link href="../../vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="../../css/app.css" rel="stylesheet" type="text/css">
 </head>
 
 <body>
@@ -172,6 +176,8 @@
                     <!-- /.panel-heading -->
                     <div class="panel-body">
                         <div id="digest-time-chart" style="height: 200px"></div>
+                        <div id="digest-time-event-timeline"></div>
+                        <div id="digest-time-range-slider"></div>
                     </div>
                     <!-- /.panel-body -->
                 </div>
@@ -185,7 +191,7 @@
             <div class="col-lg-12">
                 <div class="panel panel-default">
                     <div class="panel-heading">
-                        <i class="fa fa-bar-chart-o fa-fw"></i> Average Digest count
+                        <i class="fa fa-bar-chart-o fa-fw"></i> Digest Rate
                         <div class="btn-group pull-right" role="group" aria-label="...">
                             <button id="liveDigestCount" type="button" class="btn btn-default btn-xs active">Live</button>
                             <button id="pauseDigestCount" type="button" class="btn btn-default btn-xs">Pause</button>
@@ -193,7 +199,9 @@
                     </div>
                     <!-- /.panel-heading -->
                     <div class="panel-body">
-                        <div id="digest-frequency-number-chart" style="height: 200px"></div>
+                        <div id="digest-rate-chart" style="height: 200px"></div>
+                        <div id="digest-rate-event-timeline"></div>
+                        <div id="digest-rate-range-slider"></div>
                     </div>
                     <!-- /.panel-body -->
                 </div>
@@ -246,6 +254,7 @@
 
 <!-- jQuery -->
 <script src="../../vendor/jquery/dist/jquery.min.js"></script>
+<script src="../../vendor/jqueryui/jquery-ui.min.js"></script>
 
 <!-- Bootstrap Core JavaScript -->
 <script src="../../vendor/bootstrap/dist/js/bootstrap.min.js"></script>
@@ -253,14 +262,9 @@
 <!-- Metis Menu Plugin JavaScript -->
 <script src="../../vendor/metisMenu/dist/metisMenu.min.js"></script>
 
-<!-- Flot Charts JavaScript -->
-<script src="../../vendor/flot/excanvas.min.js"></script>
-<script src="../../vendor/flot/jquery.flot.js"></script>
-<script src="../../vendor/flot/jquery.flot.resize.js"></script>
-<script src="../../vendor/flot/jquery.flot.time.js"></script>
-<script src="../../vendor/flot.tooltip/js/jquery.flot.tooltip.min.js"></script>
-<script src="../../vendor/flot-events/jquery.flot.events.js"></script>
-
+<!-- D3 Charts JavaScript -->
+<script src="../../vendor/d3/d3.min.js"></script>
+<script src="rickshaw.min.js"></script>
 <!-- Custom Theme JavaScript -->
 <script src="../sb-admin-2.js"></script>
 

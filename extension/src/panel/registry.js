@@ -45,7 +45,10 @@ function Registry(){
 
   var
     _digestTiming = [],
-    _events = [];
+    _events = [],
+
+    _digestTimingPlotData = [],
+    _digestRatePlotData = [];
 
 
   // ------------------------------------------------------------------------------------------
@@ -79,6 +82,11 @@ function Registry(){
 
     var test = performance.now();
 
+    // Empty array
+    _.forEach(_digestTimingPlotData, function(){
+      _digestTimingPlotData.shift();
+    });
+
     if (!number){
       number = 300;
     }
@@ -88,17 +96,19 @@ function Registry(){
 
     var
       now = Date.now(),
-      data = new Array(number);
+      i;
 
-    data = _.map(data, function(item, index){return [now - ((number - index - 1) * resolution), 0]});
+    for (i = 0; i < number ; i++){
+      _digestTimingPlotData.push({x: now - ((number - i - 1) * resolution), y: 0})
+    }
 
-    for (var i = _digestTiming.length - 1; i > -1 && now - ((number-1) * resolution) < _digestTiming[i].timestamp; i-- ){
+    for (i = _digestTiming.length - 1; i > -1 && now - ((number-1) * resolution) < _digestTiming[i].timestamp; i-- ){
 
       for (var index = number - 1, bin = 0 ; index > -1 ; index--) {
         if ((now - (resolution * (bin + 1)) < _digestTiming[i].timestamp &&
           _digestTiming[i].timestamp < now - (resolution * bin))) {
 
-          data[index] = [now - (resolution * bin), (data[index][1] + _digestTiming[i].time) / 2];
+          _digestTimingPlotData[index] = { x: now - (resolution * bin), y: (_digestTimingPlotData[index].y + _digestTiming[i].time) / 2};
           break;
         }
         bin++;
@@ -106,8 +116,9 @@ function Registry(){
     }
 
     console.log('getDigestTimingPlotData time: ', performance.now() - test);
+    console.log(_digestTimingPlotData);
 
-    return data;
+    return _digestTimingPlotData;
   };
 
   /**
@@ -121,6 +132,10 @@ function Registry(){
 
     var test = performance.now();
 
+    _.forEach(_digestRatePlotData, function(){
+      _digestRatePlotData.shift();
+    });
+
     if (!number){
       number = 300;
     }
@@ -130,16 +145,19 @@ function Registry(){
 
     var
       now = Date.now(),
-      data = new Array(number);
-    data = _.map(data, function(item, index){return [now - ((number - index - 1) * resolution), 0]});
+      i;
 
-    for (var i = _digestTiming.length - 1; i > -1 && now - ((number-1) * resolution) < _digestTiming[i].timestamp; i-- ){
+    for (i = 0; i < number ; i++){
+      _digestRatePlotData.push({x: now - ((number - i - 1) * resolution), y: 0})
+    }
+
+    for (i = _digestTiming.length - 1; i > -1 && now - ((number-1) * resolution) < _digestTiming[i].timestamp; i-- ){
 
       for (var index = number - 1, bin = 0 ; index > -1 ; index--) {
         if ((now - (resolution * (bin + 1)) < _digestTiming[i].timestamp &&
           _digestTiming[i].timestamp < now - (resolution * bin))) {
 
-          data[index] = [now - (resolution * bin), data[index][1] + 1];
+          _digestRatePlotData[index] = {x: now - (resolution * bin), y: _digestRatePlotData[index].y + 1};
           break;
         }
         bin++;
@@ -148,7 +166,7 @@ function Registry(){
 
     console.log('getDigestRatePlotData time: ', performance.now() - test);
 
-    return data;
+    return _digestRatePlotData;
   };
 
   /**
@@ -207,28 +225,29 @@ function Registry(){
   /**
    * Get event data corresponding to a dataSet.
    *
-   * @param {Array[]} dataSet - dataSet to adapt to
+   * @param {String} chart - chart to get the event data for. Can be 'digest-time-chart' or
+   *                         'digest-rate-chart'
    * @returns {Array[]}
    */
-  self.getEventPlotData = function(dataSet){
-
+  self.getLastEventAnnotatorData = function(chart){
 
     var test = performance.now();
+
     var
       data = [],
-      start = dataSet[0][0],
-      end = dataSet[dataSet.length - 1][0];
+      start;
+
+    if (chart === 'digest-time-chart'){
+      start = _digestTimingPlotData[_digestTimingPlotData.length - 1].x;
+    } else if (chart === 'digest-rate-chart'){
+      start = _digestRatePlotData[_digestRatePlotData.length - 1].x;
+    }
 
     for (var i = _events.length - 1 ; i > -1 && _events[i].timestamp > start ; i--){
-      if (_events[i].timestamp < end ){
-        data.push({
-          min: _events[i].timestamp,
-          max: _events[i].timestamp,
-          eventType: EVENT_TYPE_MAP[_events[i].event.type],
-          title: _events[i].event.type,
-          description: _events[i].event.targetDOMPath
-        });
-      }
+      data.push({
+        timestamp: _events[i].timestamp,
+        message: 'Event: '+_events[i].event.type+' on '+_events[i].event.targetDOMPath
+      });
     }
 
     console.log('getEventPlotData time: ', performance.now() - test);

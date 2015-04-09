@@ -1,2 +1,4 @@
 
 extension/vendor
+*.lock
+.sass-cache
