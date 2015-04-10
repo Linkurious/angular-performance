@@ -1,0 +1,39 @@
+{
+  "name": "angular-performance",
+  "version": "1.0.0",
+  "description": "Chrome plugin for angular performance monitoring",
+  "dependencies": {
+    "bootstrap": "^3.3.4",
+    "font-awesome": "^4.3.0",
+    "jquery": "^2.1.3",
+    "jquery-ui": "^1.10.5",
+    "lodash": "^3.6.0",
+    "metismenu": "^2.0.0",
+    "rickshaw": "^1.5.1"
+  },
+  "devDependencies": {
+    "clean-css": "^3.1.9",
+    "rework-npm-cli": "^0.1.1",
+    "uglify-js": "^2.4.19"
+  },
+  "scripts": {
+    "copyFonts": "cp ./node_modules/font-awesome/fonts/* ./extension/fonts/",
+    "copyBootstrap": "cp ./node_modules/bootstrap/dist/js/bootstrap.min.js ./extension/src/vendors/",
+    "copyMetisMenu": "cp ./node_modules/metismenu/dist/metisMenu.min.js ./extension/src/vendors;",
+    "copyJs": "npm run copyBootstrap & npm run copyMetisMenu",
+    "compileVendorCSS": "rework-npm extension/css/dependencies.css | cleancss -o extension/css/vendors.css",
+    "compilePanelJs": "browserify panelApp/main.js -o extension/src/panel/panel.js",
+    "build": "npm run copyFonts & npm run copyJs & npm run compileVendorCSS & npm run compilePanelJs",
+    "watch": "watchify panelApp/main.js -o extension/src/panel/panel.js --debug --verbose"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Linkurious/angular-performance.git"
+  },
+  "author": "Nicolas Joseph",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Linkurious/angular-performance/issues"
+  },
+  "homepage": "https://github.com/Linkurious/angular-performance"
+}

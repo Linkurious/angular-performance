@@ -1,0 +1,10 @@
+/*
+ * This file is used to include in the extension all the css files required by the project
+ * It will be compiled to the vendors.css file.
+ */
+
+@import "bootstrap";
+@import "jquery-ui/themes/base/minified/jquery-ui.min.css";
+@import "metismenu/dist/metisMenu.min.css";
+@import "rickshaw/rickshaw.min.css";
+@import "font-awesome/css/font-awesome.min.css";

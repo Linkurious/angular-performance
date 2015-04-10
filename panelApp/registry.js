@@ -1,5 +1,7 @@
 'use strict';
 
+var _ = require('lodash');
+
 /**
  * Object holding all the values that will be displayed in the interface
  *
@@ -10,43 +12,14 @@ function Registry(){
   var self = this;
 
   var
-    BUFFER_MAX_ELEMENT = 300,
-    EVENT_TYPE_MAP = {
-      'mousedown': 'MOUSE_EVENT',
-      'mouseup': 'MOUSE_EVENT',
-      'click': 'MOUSE_EVENT',
-      'dblclick': 'MOUSE_EVENT',
-      //Mouse move event id too chatty
-      //'mousemove' : 'MOUSE_EVENT',
-      'mouseover': 'MOUSE_EVENT',
-      'mouseout': 'MOUSE_EVENT',
-      'mousewheel': 'MOUSE_EVENT',
-
-      'keydown': 'KEYBOARD_EVENT',
-      'keyup': 'KEYBOARD_EVENT',
-      'keypress': 'KEYBOARD_EVENT',
-      'textInput': 'KEYBOARD_EVENT',
-
-      'touchstart': 'TOUCH_EVENT',
-      'touchmove': 'TOUCH_EVENT',
-      'touchend': 'TOUCH_EVENT',
-      'touchcancel': 'TOUCH_EVENT',
-
-      'resize': 'CONTROL_EVENT',
-      'scroll': 'CONTROL_EVENT',
-      'zoom': 'CONTROL_EVENT',
-      'focus': 'CONTROL_EVENT',
-      'blur': 'CONTROL_EVENT',
-      'select': 'CONTROL_EVENT',
-      'change': 'CONTROL_EVENT',
-      'submit': 'CONTROL_EVENT',
-      'reset': 'CONTROL_EVENT'
-    };
+    BUFFER_MAX_ELEMENT = 300;
 
   var
     _digestTiming = [],
+    _digestTimingDistribution = {},
     _events = [],
 
+    _digestTimingDistributionPlotData = [],
     _digestTimingPlotData = [],
     _digestRatePlotData = [];
 
@@ -69,6 +42,11 @@ function Registry(){
       timestamp: timestamp,
       time: time
     });
+
+    var roundTime = Math.round(time);
+
+    _digestTimingDistribution[roundTime] =
+      (_digestTimingDistribution[roundTime]) ? _digestTimingDistribution[roundTime] + 1 : 1;
   };
 
   /**
@@ -79,8 +57,6 @@ function Registry(){
    * @returns {Array[]} array of array containing each [x, y]
    */
   self.getDigestTimingPlotData = function(number, resolution){
-
-    var test = performance.now();
 
     // Empty array
     _.forEach(_digestTimingPlotData, function(){
@@ -115,9 +91,6 @@ function Registry(){
       }
     }
 
-    console.log('getDigestTimingPlotData time: ', performance.now() - test);
-    console.log(_digestTimingPlotData);
-
     return _digestTimingPlotData;
   };
 
@@ -129,8 +102,6 @@ function Registry(){
    * @returns {Array[]} array of array containing each [x, y]
    */
   self.getDigestRatePlotData = function(number, resolution){
-
-    var test = performance.now();
 
     _.forEach(_digestRatePlotData, function(){
       _digestRatePlotData.shift();
@@ -164,9 +135,29 @@ function Registry(){
       }
     }
 
-    console.log('getDigestRatePlotData time: ', performance.now() - test);
-
     return _digestRatePlotData;
+  };
+
+  /**
+   * Get the distribution of the timings in for the digest data
+   *
+   * @returns {Array}
+   */
+  self.getDigestTimeDistributionPlotData = function(){
+
+    _.forEach(_digestTimingDistributionPlotData, function(){
+      _digestTimingDistributionPlotData.shift();
+    });
+
+    _.forEach(Object.keys(_digestTimingDistribution), function(key){
+      _digestTimingDistributionPlotData.push({x: parseInt(key, 10), y: _digestTimingDistribution[key]});
+    });
+
+    if (_digestTimingDistributionPlotData.length === 0){
+      _digestTimingDistributionPlotData.push({x: 0, y: 0});
+    }
+
+    return _digestTimingDistributionPlotData;
   };
 
   /**
@@ -231,8 +222,6 @@ function Registry(){
    */
   self.getLastEventAnnotatorData = function(chart){
 
-    var test = performance.now();
-
     var
       data = [],
       start;
@@ -250,8 +239,8 @@ function Registry(){
       });
     }
 
-    console.log('getEventPlotData time: ', performance.now() - test);
-
     return data;
   }
 }
+
+module.exports = Registry;

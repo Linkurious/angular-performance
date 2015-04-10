@@ -7,3 +7,8 @@
 #digest-rate-range-slider {
   margin-top: 10px;
 }
+
+/* line 9, ../../.scss/app.scss */
+#digest-time-distribution-range-slider {
+  margin-top: 20px;
+}
