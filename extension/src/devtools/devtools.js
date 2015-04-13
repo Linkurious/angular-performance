@@ -26,6 +26,7 @@ function log(message, obj){
 
 backgroundPageConnection.onMessage.addListener(function (message) {
 
+  // We only want to build the panel if angular was detected in the page
   if (message.task === 'initDevToolPanel'){
     log('building panel');
     chrome.devtools.panels.create(
@@ -33,13 +34,14 @@ backgroundPageConnection.onMessage.addListener(function (message) {
       'images/AngularJS-Shield-small.png',
       'src/panel/panel.html'
     );
+    // Once the panel is built, this is not useful anymore, we disconnect to free resources
     backgroundPageConnection.disconnect();
   } else {
     log('Unknown task ', message.task);
   }
 });
 
-// Initialize the connection Array for the current tab in the background script
+// Tell the background script to include this into the dispatch
 backgroundPageConnection.postMessage({
   task: 'init',
   tabId: chrome.devtools.inspectedWindow.tabId

@@ -28,10 +28,19 @@ instantMetrics.updateDigestTiming = function(time){
 };
 
 /**
- * Updates the panel with the last secon
+ * Updates the panel with the last second
  */
 instantMetrics.updateDigestCount = function(){
   $('#instantDigestRate').text(_registry.getLastSecondDigestCount());
+};
+
+/**
+ * Updates the panel with the last Watcher count
+ *
+ * @param {Number} count
+ */
+instantMetrics.updateWatcherCount = function(count){
+  $('#instantWatcherCount').text(count);
 };
 
 /**

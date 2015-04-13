@@ -1,6 +1,6 @@
 'use strict';
 
-
+// Browserify isolates loaded modules, dependencies need jquery as global
 window.jQuery = window.$ = require('jquery');
 
 var
@@ -13,9 +13,11 @@ var
 
 var registry = new Registry();
 
+// Initialize all services with the registry (should be a singleton)
 InstantMetrics.initRegistry(registry);
 Plots.initRegistry(registry);
 
+// Listen to the message sent by the injected script
 backgroundPageConnection.onMessage.addListener(function(message){
 
   switch(message.task){
@@ -26,19 +28,25 @@ backgroundPageConnection.onMessage.addListener(function(message){
     case 'registerEvent':
       registry.registerEvent(message.data.timestamp, message.data.event);
       break;
+    case 'registerRootWatcherCount':
+      InstantMetrics.updateWatcherCount(message.data.watcher.watcherCount);
+      break;
     default:
       log('Unknown task ', message.task);
       break;
   }
 });
 
+// The panel is initialized, send reference for message dispatch
 backgroundPageConnection.postMessage({
   task: 'init',
   tabId: chrome.devtools.inspectedWindow.tabId
 });
 
+// Set up the timed retrieval of digest count
 InstantMetrics.listenToDigestCount(registry);
 
+// Set up plots of the main tab
 Plots.setMainPlotsSettings([
   {
     id: 'digest-time-chart',

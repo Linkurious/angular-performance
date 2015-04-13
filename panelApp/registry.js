@@ -18,6 +18,7 @@ function Registry(){
     _digestTiming = [],
     _digestTimingDistribution = {},
     _events = [],
+    _watcherCount = [],
 
     _digestTimingDistributionPlotData = [],
     _digestTimingPlotData = [],
@@ -32,7 +33,7 @@ function Registry(){
    * Used to save the last digest timing into the registry
    *
    * @param {Number} timestamp - timestamp in ms
-   * @param {Number} time - time in ms, length of the digest cycle
+   * @param {Number} time      - time in ms, length of the digest cycle
    */
   self.registerDigestTiming = function(timestamp, time){
     if (_digestTiming.length === BUFFER_MAX_ELEMENT){
@@ -52,9 +53,9 @@ function Registry(){
   /**
    * Gets the data to be fed into the plotting function for digest timing
    *
-   * @param {Number} [number] - number of item to return, default to 100
+   * @param {Number} [number]     - number of item to return, default to 100
    * @param {Number} [resolution] - time between the sampled points in ms
-   * @returns {Array[]} array of array containing each [x, y]
+   * @returns {Array[]}           - array of array containing each [x, y]
    */
   self.getDigestTimingPlotData = function(number, resolution){
 
@@ -97,9 +98,9 @@ function Registry(){
   /**
    * Gets the data to be fed into the plotting function for digest rate
    *
-   * @param {Number} [number] - number of item to return, default to 100
-   * @param {Number} [resolution] - time between the sampled points in ms
-   * @returns {Array[]} array of array containing each [x, y]
+   * @param {Number}   [number]     - number of item to return, default to 100
+   * @param {Number}   [resolution] - time between the sampled points in ms
+   * @returns {Array[]}             - array of array containing each [x, y]
    */
   self.getDigestRatePlotData = function(number, resolution){
 
@@ -163,9 +164,9 @@ function Registry(){
   /**
    * Gets the last registered timing according to the order of registration
    *
-   * @returns {Object|null} timing - null if no element registered yet
-   * @returns {Number} timing.timestamp - start time of the digest
-   * @returns {Number} timing.time      - length of the digest
+   * @returns {Object|null} timing           - null if no element registered yet
+   * @returns {Number}      timing.timestamp - start time of the digest
+   * @returns {Number}      timing.time      - length of the digest
    */
   self.getLastDigestTiming = function(){
     return (_digestTiming.length > 0) ? _digestTiming[_digestTiming.length-1] : null ;
@@ -198,9 +199,9 @@ function Registry(){
   /**
    * Register a user event
    *
-   * @param {Number} timestamp - js timestamp when the event was fired
-   * @param {Object} event - event to be registered
-   * @param {String} event.type - event type ex: 'onclick'
+   * @param {Number} timestamp           - js timestamp when the event was fired
+   * @param {Object} event               - event to be registered
+   * @param {String} event.type          - event type ex: 'onclick'
    * @param {String} event.targetDOMPath - DOM path of the targeted event.
    */
   self.registerEvent = function(timestamp, event){
@@ -240,6 +241,28 @@ function Registry(){
     }
 
     return data;
+  };
+
+  // ------------------------------------------------------------------------------------------
+  //                                        Watchers
+  // ------------------------------------------------------------------------------------------
+
+  /**
+   * Registers instant data on watcher
+   *
+   * @param {Number} timestamp            - corresponds to the timestamp of the take metric
+   * @param {Object} watcher              - saved watcher data
+   * @param {Number} watcher.watcherCount - number of watchers counted
+   * @param {String} watcher.location     - current url of the taken metric
+   */
+  self.registerWatcherCount = function(timestamp, watcher){
+    if (_watcherCount.length === BUFFER_MAX_ELEMENT){
+      _watcherCount.shift();
+    }
+    _watcherCount.push({
+      timestamp: timestamp,
+      watcher: watcher
+    });
   }
 }
 

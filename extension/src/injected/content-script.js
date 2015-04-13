@@ -91,6 +91,7 @@ function generateXPath(element) {
 
 log('Content Script loaded');
 
+// Listen for messages from the current page and send then to the background script for dispatch
 window.addEventListener('message', function(event) {
 
   // We only accept messages from ourselves
@@ -106,7 +107,7 @@ window.addEventListener('message', function(event) {
   backgroundPageConnection.postMessage(message);
 }, false);
 
-
+// Add Listeners for all user events to that they can be captured
 USER_EVENTS.forEach(function(eventType){
   document.addEventListener(eventType, function(event){
     backgroundPageConnection.postMessage({
