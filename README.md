@@ -2,6 +2,8 @@
 
 [![Inline docs](http://inch-ci.org/github/Linkurious/angular-performance.svg?branch=master)](http://inch-ci.org/github/Linkurious/angular-performance)
 
+[![Screenshot](screenshot.png)](screenshot.png)
+
 This is a chrome extension aimed at monitoring angular application performance.
 
 ## Build
@@ -36,11 +38,11 @@ $ npm run build
 * Digest time monitoring
 * Digest rate monitoring
 * Digest times distribution
+* Watcher count monitoring
 
 ### Roadmap
 * FPS renderding monitoring
 * Scopes inspection (respective value and digesting time)
-* Watcher count monitoring
 * Public methods async and sync timing
 
 ## License
