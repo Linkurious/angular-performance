@@ -10,9 +10,19 @@ var
   _UPDATE_INTERVAL = 1000,
   _COLOR_PALETTE = new Rickshaw.Color.Palette( { scheme: 'classic9' }),
 
+  _registry = null,
   _mainPlotsSettings = [],
 
   Plots = {};
+
+/**
+ * Initializes the registry reference.
+ *
+ * @param registry
+ */
+Plots.initRegistry = function(registry){
+  _registry = registry;
+};
 
 /**
  * Sets the different plots of the panel
@@ -25,10 +35,8 @@ Plots.setMainPlotsSettings = function(settingsArray){
 
 /**
  * Builds the plots on the main page
- *
- * @param {Object} registry - Registry used to get the plot data
  */
-Plots.buildMainPlots = function(registry){
+Plots.buildMainPlots = function(){
 
   _.forEach(_mainPlotsSettings, function(plot){
 
@@ -100,7 +108,7 @@ Plots.buildMainPlots = function(registry){
     plot.updateFunction = function(){
 
       if (plot.eventTimelineId) {
-        _.forEach(registry.getLastEventAnnotatorData(plot.id), function (event) {
+        _.forEach(_registry.getLastEventAnnotatorData(plot.id), function (event) {
           plot.annotator.add(event.timestamp, event.message);
         });
         plot.annotator.update();

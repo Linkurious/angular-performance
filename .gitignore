@@ -5,3 +5,11 @@ extension/vendor
 
 node_modules
 npm-debug.log
+
+*~
+.DS_Store
+.idea
+.vagrant
+target
+neo4J-cleanup-addon.iml
+log-test.txt

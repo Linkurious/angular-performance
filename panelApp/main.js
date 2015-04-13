@@ -6,17 +6,22 @@ window.jQuery = window.$ = require('jquery');
 var
   Registry = require('./registry'),
   Plots = require('./plots'),
+  InstantMetrics = require('./instantMetrics'),
   backgroundPageConnection = chrome.runtime.connect({
     name: "angular-performance-panel"
   });
 
 var registry = new Registry();
 
+InstantMetrics.initRegistry(registry);
+Plots.initRegistry(registry);
+
 backgroundPageConnection.onMessage.addListener(function(message){
 
   switch(message.task){
     case 'registerDigestTiming':
-      updateDigestTimingInstantMetric(message.data.time);
+      InstantMetrics.updateDigestTiming(message.data.time);
+      console.log(message.data.time)
       registry.registerDigestTiming(message.data.timestamp, message.data.time);
       break;
     case 'registerEvent':
@@ -33,23 +38,7 @@ backgroundPageConnection.postMessage({
   tabId: chrome.devtools.inspectedWindow.tabId
 });
 
-/**
- * Updates the panel with the last digest length
- *
- * @param {Number} time - time of the digest in ms
- */
-function updateDigestTimingInstantMetric(time){
-  $('#digestTimeInstant').text(Math.round(time));
-}
-
-/**
- * Updates the panel with the last secon
- */
-function updateDigestCountInstantMetric(){
-  $('#instantDigestRate').text(registry.getLastSecondDigestCount());
-  setTimeout(updateDigestCountInstantMetric, 300);
-}
-updateDigestCountInstantMetric();
+InstantMetrics.listenToDigestCount(registry);
 
 Plots.setMainPlotsSettings([
   {
