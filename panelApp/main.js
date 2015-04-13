@@ -21,7 +21,6 @@ backgroundPageConnection.onMessage.addListener(function(message){
   switch(message.task){
     case 'registerDigestTiming':
       InstantMetrics.updateDigestTiming(message.data.time);
-      console.log(message.data.time)
       registry.registerDigestTiming(message.data.timestamp, message.data.time);
       break;
     case 'registerEvent':
