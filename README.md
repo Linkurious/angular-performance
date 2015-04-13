@@ -44,3 +44,9 @@ $ npm run build
 ## License
 See [LICENSE](LICENSE) file.
 
+## Credits
+Many thanks to the contributors on these open source projects on which is inspired this extension
+* [ng-stats](https://github.com/kentcdodds/ng-stats)
+* [Angular Inspector](https://github.com/kkirsche/angularjs-inspector)
+* [ng-Inspector](https://github.com/rev087/ng-inspector)
+
