@@ -1,0 +1,11 @@
+{
+  "files": {
+    "included": [
+      "extension/src/**/*.js",
+      "panelApp/**/*.js"
+    ],
+    "excluded": [
+      "extension/vendors/sb-admin-2.js"
+    ]
+  }
+}
