@@ -1,5 +1,7 @@
 #Angular-performance - alpha
 
+[![Inline docs](http://inch-ci.org/github/Linkurious/angular-performance.svg?branch=master)](http://inch-ci.org/github/Linkurious/angular-performance)
+
 This is a chrome extension aimed at monitoring angular application performance.
 
 ## Build
