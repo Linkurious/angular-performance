@@ -116,6 +116,10 @@ Plots.buildMainPlots = function(){
       plot.dataFunction();
       plot.instance.update();
 
+      if (plot.callback){
+        plot.callback();
+      }
+
       if (plot.live) {
         setTimeout(plot.updateFunction, _UPDATE_INTERVAL);
       }

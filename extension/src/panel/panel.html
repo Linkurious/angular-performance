@@ -119,7 +119,7 @@
                             </div>
                         </div>
                     </div>
-                    <a href="#digest-frequency-number-chart">
+                    <a href="#digest-rate-chart">
                         <div class="panel-footer">
                             <span class="pull-left">View Details</span>
                             <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
@@ -217,14 +217,55 @@
                 <div class="panel panel-default">
                     <div class="panel-heading">
                         <i class="fa fa-bar-chart-o fa-fw"></i> Watchers
+                        <div class="btn-group pull-right" role="group" aria-label="...">
+                            <button id="liveWatchersCount" type="button" class="btn btn-default btn-xs active">Live</button>
+                            <button id="pauseWatchersCount" type="button" class="btn btn-default btn-xs">Pause</button>
+                        </div>
                     </div>
                     <!-- /.panel-heading -->
                     <div class="panel-body">
-                        <div id="watchers-number-chart"></div>
+                        <div id="watchers-count-chart"></div>
+                        <div id="watchers-event-timeline"></div>
+                        <div id="watchers-range-slider"></div>
                     </div>
                     <!-- /.panel-body -->
                 </div>
 
+                <!-- /.panel -->
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <i class="fa fa-bar-chart-o fa-fw"></i> id - Location legend
+                    </div>
+                    <!-- /.panel-heading -->
+                    <div class="panel-body">
+                        <div class="row">
+                            <div class="col-lg-4">
+                                <div class="table-responsive">
+                                    <table class="table table-bordered table-hover table-striped">
+                                        <thead>
+                                        <tr>
+                                            <th>id</th>
+                                            <th>Location</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody id="id-location-table">
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="col-lg-8">
+                                <div id="watcher-count-distribution-chart" style="height: 200px"></div>
+                                <div id="watcher-count-distribution-range-slider"></div>
+                            </div>
+                        </div>
+                    <!-- /.table-responsive -->
+                    </div>
+                    <!-- /.panel-body -->
+                </div>
                 <!-- /.panel -->
             </div>
         </div>

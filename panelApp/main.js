@@ -11,6 +11,8 @@ var
     name: "angular-performance-panel"
   });
 
+var _ = require('lodash');
+
 var registry = new Registry();
 
 // Initialize all services with the registry (should be a singleton)
@@ -30,6 +32,7 @@ backgroundPageConnection.onMessage.addListener(function(message){
       break;
     case 'registerRootWatcherCount':
       InstantMetrics.updateWatcherCount(message.data.watcher.watcherCount);
+      registry.registerWatcherCount(message.data.timestamp, message.data.watcher);
       break;
     default:
       log('Unknown task ', message.task);
@@ -76,6 +79,33 @@ Plots.setMainPlotsSettings([
     renderer: 'bar',
     xAxis: 'numerical',
     live: true
+  },
+  {
+    id: 'watchers-count-chart',
+    eventTimelineId: 'watchers-event-timeline',
+    rangeSliderId: 'watchers-range-slider',
+    plotName: 'Watchers count',
+    dataFunction: registry.getWatchersCountPlotData,
+    pauseButton: '#pauseWatchersCount',
+    liveButton: '#liveWatchersCount',
+    live: true
+  },
+  {
+    id: 'watcher-count-distribution-chart',
+    rangeSliderId: 'watcher-count-distribution-range-slider',
+    plotName: 'Watcher Count distribution',
+    dataFunction: registry.getWatchersCountDistributionPlotData,
+    renderer: 'bar',
+    xAxis: 'numerical',
+    live: true,
+    callback: function(){
+      $('#id-location-table').empty();
+      var locationMap = registry.getLocationMap();
+
+      _.forEach(Object.keys(locationMap), function(location){
+        $('#id-location-table').append('<tr><td>'+ locationMap[location] +'</td><td>'+ location +'</td></tr>');
+      });
+    }
   }
 ]);
 

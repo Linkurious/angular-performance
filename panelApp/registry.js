@@ -19,10 +19,16 @@ function Registry(){
     _digestTimingDistribution = {},
     _events = [],
     _watcherCount = [],
+    _watcherCountDistribution = {},
 
     _digestTimingDistributionPlotData = [],
     _digestTimingPlotData = [],
-    _digestRatePlotData = [];
+    _digestRatePlotData = [],
+    _watcherCountPlotData = [],
+    _watcherCountDistributionPlotData = [],
+
+    _locationMap = {},
+    _locationCount = 0;
 
 
   // ------------------------------------------------------------------------------------------
@@ -154,6 +160,7 @@ function Registry(){
       _digestTimingDistributionPlotData.push({x: parseInt(key, 10), y: _digestTimingDistribution[key]});
     });
 
+    // This is needed for graph init at the beginning of the session
     if (_digestTimingDistributionPlotData.length === 0){
       _digestTimingDistributionPlotData.push({x: 0, y: 0});
     }
@@ -263,6 +270,74 @@ function Registry(){
       timestamp: timestamp,
       watcher: watcher
     });
+
+    if (_watcherCountDistribution[watcher.location]){
+      _watcherCountDistribution[watcher.location] =  Math.round((_watcherCountDistribution[watcher.location] + watcher.watcherCount) / 2);
+    } else {
+      _watcherCountDistribution[watcher.location] = watcher.watcherCount;
+      _locationMap[watcher.location] = _locationCount;
+      _locationCount++;
+    }
+  };
+
+  /**
+   * Gets the watchers plotted data as for the watcher count history.
+   * The plotted data is a progressively filled graph. Once the buffer is full, the time flies.
+   *
+   * @returns {Array[]}
+   */
+  self.getWatchersCountPlotData = function(){
+
+    // Empty array
+    _.forEach(_watcherCountPlotData, function(){
+      _watcherCountPlotData.shift();
+    });
+
+    var i;
+
+    // Get the last watcher count registrations
+    for (i = _watcherCount.length - 1; i > -1 ; i-- ){
+      _watcherCountPlotData[i] = {x: _watcherCount[i].timestamp, y: _watcherCount[i].watcher.watcherCount}
+    }
+
+    // This is needed for graph init at the beginning of the session
+    if (_watcherCountPlotData.length === 0){
+      _watcherCountPlotData.push({x: 0, y: 0});
+    }
+
+    return _watcherCountPlotData;
+  };
+
+  /**
+   * Gets the distribution of the watcher count according to the location of the page.
+   *
+   * @returns {Array[]}
+   */
+  self.getWatchersCountDistributionPlotData = function(){
+    // Empty array
+    _.forEach(_watcherCountDistributionPlotData, function(){
+      _watcherCountDistributionPlotData.shift();
+    });
+
+    _.forEach(Object.keys(_watcherCountDistribution), function(key){
+      _watcherCountDistributionPlotData.push({x: _locationMap[key], y: _watcherCountDistribution[key]});
+    });
+
+    // This is needed for graph init at the beginning of the session
+    if (_watcherCountDistributionPlotData.length === 0){
+      _watcherCountDistributionPlotData.push({x: 0, y: 0});
+    }
+
+    return _watcherCountDistributionPlotData;
+  };
+
+  /**
+   * Gets the location map that makes the correspondence between the Location and their id
+   *
+   * @returns {{}}
+   */
+  self.getLocationMap = function(){
+    return _locationMap;
   }
 }
 
