@@ -1,5 +1,7 @@
 #Angular-performance - alpha
 
+[![Codacy Badge](https://www.codacy.com/project/badge/1ae19e8ddd704a7bab46537588224099)](https://www.codacy.com/app/nikel092_2742/angular-performance)
+
 [![Inline docs](http://inch-ci.org/github/Linkurious/angular-performance.svg?branch=master)](http://inch-ci.org/github/Linkurious/angular-performance)
 
 [![Screenshot](screenshot.png)](screenshot.png)
