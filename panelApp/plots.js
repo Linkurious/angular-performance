@@ -34,6 +34,25 @@ Plots.setMainPlotsSettings = function(settingsArray){
 };
 
 /**
+ * Stops the main plots rendering to spare to computing resources
+ */
+Plots.stopMainPlotRendering = function(){
+  _.forEach(_mainPlotsSettings, function(plot){
+    plot.live = false;
+  });
+};
+
+/**
+ * Turns on auto-refresh on the main plots.
+ */
+Plots.startMainPlotRendering = function(){
+  _.forEach(_mainPlotsSettings, function(plot){
+    plot.live = true;
+    plot.updateFunction();
+  })
+};
+
+/**
  * Builds the plots on the main page
  */
 Plots.buildMainPlots = function(){

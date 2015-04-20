@@ -5,6 +5,7 @@ window.jQuery = window.$ = require('jquery');
 
 var
   Registry = require('./registry'),
+  TabsHandler = require('./tabHandler'),
   Plots = require('./plots'),
   InstantMetrics = require('./instantMetrics'),
   backgroundPageConnection = chrome.runtime.connect({
@@ -18,6 +19,8 @@ var registry = new Registry();
 // Initialize all services with the registry (should be a singleton)
 InstantMetrics.initRegistry(registry);
 Plots.initRegistry(registry);
+
+var tabs = new TabsHandler(Plots);
 
 // Listen to the message sent by the injected script
 backgroundPageConnection.onMessage.addListener(function(message){
@@ -110,6 +113,7 @@ Plots.setMainPlotsSettings([
 ]);
 
 Plots.buildMainPlots(registry);
+tabs.bindTabs();
 
 
 
