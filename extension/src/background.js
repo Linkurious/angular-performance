@@ -112,7 +112,7 @@ chrome.runtime.onConnect.addListener(function(port){
 
       var tabs = Object.keys(devToolsConnections);
       for (var i=0, len=tabs.length; i < len; i++) {
-        if (devToolsConnections[tabs[i]] == port) {
+        if (devToolsConnections[tabs[i]] === port) {
           delete devToolsConnections[tabs[i]];
           break;
         }
@@ -140,7 +140,7 @@ chrome.runtime.onConnect.addListener(function(port){
 
       var tabs = Object.keys(panelConnections);
       for (var i=0, len=tabs.length; i < len; i++) {
-        if (panelConnections[tabs[i]] == port) {
+        if (panelConnections[tabs[i]] === port) {
           delete panelConnections[tabs[i]];
           break;
         }

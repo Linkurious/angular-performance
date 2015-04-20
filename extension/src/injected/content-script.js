@@ -95,8 +95,9 @@ log('Content Script loaded');
 window.addEventListener('message', function(event) {
 
   // We only accept messages from ourselves
-  if (event.source != window)
+  if (event.source !== window){
     return;
+  }
 
   var message = event.data;
 
