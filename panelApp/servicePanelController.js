@@ -51,7 +51,7 @@ function ServicePanelController (pageConnection){
       _newModuleServices.empty();
 
       var ul = $('<ul></ul>');
-      _.forEach(services, function(service){
+      _.forEach(services.sort(), function(service){
         ul.append('<li>' + service + '</li>');
       });
 
