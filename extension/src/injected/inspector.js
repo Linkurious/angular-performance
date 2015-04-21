@@ -30,7 +30,7 @@
 
       window.postMessage({
         task: 'initDevToolPanel',
-        source: 'angular-performance'
+        source: 'angular-performance-inspector'
       }, '*');
 
       bootstrapInspector();
@@ -52,11 +52,28 @@
       var start = performance.now();
       oldDigest.apply(this, arguments);
       var time = (performance.now() - start);
-      report('DigestTiming', {
+      register('DigestTiming', {
         timestamp: Date.now(),
         time: time
       });
     };
+
+    // We listen for async instrumentation instructions
+    window.addEventListener('message', function(event){
+      // We only accept messages from ourselves
+      if (event.source != window || event.data.source !== 'angular-performance') {
+        return;
+      }
+
+      var message = event.data;
+
+      if (message.task === 'checkModuleName'){
+        sendTask('reportModuleExistence', {
+          moduleName: message.moduleName,
+          existing: checkNgModuleExistance(message.moduleName)
+        });
+      }
+    });
 
     initWatcherCount();
   }
@@ -65,7 +82,7 @@
    * Function to be called once to init the watcher retrieval.
    */
   function initWatcherCount(){
-    report('RootWatcherCount', {
+    register('RootWatcherCount', {
       timestamp: Date.now(),
       watcher:{
         watcherCount: getWatcherCountForScope(),
@@ -74,6 +91,11 @@
     });
     setTimeout(initWatcherCount, 300);
   }
+
+  // ------------------------------------------------------------------------------------------
+  //                                Scope & Watcher Exploration
+  // ------------------------------------------------------------------------------------------
+
 
   /**
    * Retrieves the watcher count for a particular scope
@@ -226,17 +248,54 @@
     return typeof scope === 'string' || typeof scope === 'number';
   }
 
+  // ------------------------------------------------------------------------------------------
+  //                                     Module & Services
+  // ------------------------------------------------------------------------------------------
+
+  /**
+   * Checks whether or not an angular module exists in the page context.
+   *
+   * @param {String} moduleName
+   * @returns {boolean}
+   */
+  function checkNgModuleExistance(moduleName){
+    var toReturn = true;
+
+    try {
+      angular.module(moduleName);
+    } catch (e){
+      toReturn = false;
+    }
+
+    return toReturn;
+  }
+
+
+  // ------------------------------------------------------------------------------------------
+  //                                        Utils
+  // ------------------------------------------------------------------------------------------
+
   /**
    * Reports a metric
    *
-   * @param {String} variable - can be 'digestTiming'
-   * @param {Object} value    -  value to be registered with the variable
+   * @param {String} task  - task to do
+   * @param {Object} value - data that can be sent along with the task
    */
-  function report(variable, value){
+  function sendTask(task, value){
     window.postMessage({
-      source: 'angular-performance',
-      task: 'register'+variable,
+      source: 'angular-performance-inspector',
+      task: task,
       data: value
     }, '*');
+  }
+
+  /**
+   * Register a metric into the devtool instance registry
+   *
+   * @param {String} variable - can be 'digestTiming'
+   * @param {Object} value    - value to be registered with the variable
+   */
+  function register(variable, value){
+    sendTask('register'+variable, value);
   }
 })();

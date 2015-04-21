@@ -17,7 +17,7 @@
     "uglify-js": "^2.4.19"
   },
   "scripts": {
-    "copyFonts": "cp ./node_modules/font-awesome/fonts/* ./extension/fonts/",
+    "copyFonts": "cp ./node_modules/font-awesome/fonts/* ./extension/fonts/ & cp ./node_modules/bootstrap/fonts/* ./extension/fonts/",
     "copyBootstrap": "cp ./node_modules/bootstrap/dist/js/bootstrap.min.js ./extension/src/vendors/",
     "copyMetisMenu": "cp ./node_modules/metismenu/dist/metisMenu.min.js ./extension/src/vendors;",
     "copyJs": "npm run copyBootstrap & npm run copyMetisMenu",

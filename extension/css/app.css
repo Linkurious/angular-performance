@@ -1,14 +1,19 @@
 /* line 1, ../../.scss/app.scss */
+#page-wrapper {
+  padding-top: 20px;
+}
+
+/* line 5, ../../.scss/app.scss */
 #digest-time-range-slider {
   margin-top: 10px;
 }
 
-/* line 5, ../../.scss/app.scss */
+/* line 9, ../../.scss/app.scss */
 #digest-rate-range-slider {
   margin-top: 10px;
 }
 
-/* line 9, ../../.scss/app.scss */
+/* line 13, ../../.scss/app.scss */
 #digest-time-distribution-range-slider {
   margin-top: 20px;
 }

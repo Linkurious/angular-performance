@@ -45,7 +45,8 @@ $ npm run build
 ### Roadmap
 * FPS renderding monitoring
 * Scopes inspection (respective value and digesting time)
-* Public methods async and sync timing
+* Services async and sync timing
+* Dependency analysis
 
 ## License
 See [LICENSE](LICENSE) file.

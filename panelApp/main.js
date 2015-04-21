@@ -3,7 +3,10 @@
 // Browserify isolates loaded modules, dependencies need jquery as global
 window.jQuery = window.$ = require('jquery');
 
+var _ = require('lodash');
+
 var
+  ServicePanelCtrl = require('./servicePanelController'),
   Registry = require('./registry'),
   TabsHandler = require('./tabHandler'),
   Plots = require('./plots'),
@@ -12,9 +15,9 @@ var
     name: "angular-performance-panel"
   });
 
-var _ = require('lodash');
-
-var registry = new Registry();
+var
+  registry = new Registry(),
+  servicePanelCtrl = new ServicePanelCtrl(backgroundPageConnection);
 
 // Initialize all services with the registry (should be a singleton)
 InstantMetrics.initRegistry(registry);
@@ -37,8 +40,11 @@ backgroundPageConnection.onMessage.addListener(function(message){
       InstantMetrics.updateWatcherCount(message.data.watcher.watcherCount);
       registry.registerWatcherCount(message.data.timestamp, message.data.watcher);
       break;
+    case 'reportModuleExistence':
+      servicePanelCtrl.printModuleNameCheck(message.data.existing);
+      break;
     default:
-      log('Unknown task ', message.task);
+      console.log('Unknown task ', message);
       break;
   }
 });

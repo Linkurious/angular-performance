@@ -2,6 +2,7 @@
 
 // Mapping of the connections between the devtools and the tabs
 var
+  contentScriptConnections = {},
   devToolsConnections = {},
   panelConnections = {};
 
@@ -63,6 +64,10 @@ chrome.runtime.onConnect.addListener(function(port){
     if (sender.tab) {
       var tabId = sender.tab.id;
 
+      if (!contentScriptConnections[tabId]){
+        contentScriptConnections[tabId] = port;
+      }
+
       if (message.task === 'initDevToolPanel' && tabId in devToolsConnections) {
         devToolsConnections[tabId].postMessage(message);
       } else if (tabId in panelConnections) {
@@ -77,7 +82,7 @@ chrome.runtime.onConnect.addListener(function(port){
   };
 
   /**
-   * Listener for the panel inserted n the devtools (we cannot communicate directly between the
+   * Listener for the panel inserted in the devtools (we cannot communicate directly between the
    * devtool page and the panel (weird)
    *
    * @param {Object} message
@@ -86,6 +91,10 @@ chrome.runtime.onConnect.addListener(function(port){
     if (message.task === 'init'){
       console.log('background.js - panel listener initialized ', message.tabId);
       panelConnections[message.tabId] = port
+
+    } else if (message.task === 'sendTaskToInspector') {
+
+      contentScriptConnections[message.tabId].postMessage(message.data)
 
     } else if (message.task === 'log'){
       if (message.obj) {

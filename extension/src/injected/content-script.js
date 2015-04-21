@@ -78,7 +78,7 @@ function generateXPath(element) {
   var ix= 0;
   var siblings= element.parentNode.childNodes;
 
-  for (var i = 0 ; i<siblings.length ; i++) {
+  for (var i = 0 ; i < siblings.length ; i++) {
     var sibling = siblings[i];
     if (sibling === element) {
       return generateXPath(element.parentNode) + '/' + element.tagName + '[' + (ix + 1) + ']';
@@ -95,12 +95,13 @@ log('Content Script loaded');
 window.addEventListener('message', function(event) {
 
   // We only accept messages from ourselves
-  if (event.source != window)
+  if (event.source != window) {
     return;
+  }
 
   var message = event.data;
 
-  if (typeof message !== 'object' || message === null || message.source !== 'angular-performance') {
+  if (typeof message !== 'object' || message === null || message.source !== 'angular-performance-inspector') {
     return;
   }
 
@@ -131,5 +132,12 @@ script.type = 'text/javascript';
 script.src = chrome.extension.getURL('src/injected/inspector.js');
 document.head.appendChild(script);
 
+backgroundPageConnection.onMessage.addListener(function(message){
 
+  if (message.source){
+    log('Content-script.js - source already defined');
+  }
 
+  message.source = 'angular-performance';
+  window.postMessage(message, '*');
+});
