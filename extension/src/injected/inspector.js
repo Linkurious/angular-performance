@@ -12,6 +12,8 @@
 (function() {
   'use strict';
 
+  var _angularInjector;
+
   console.log('angular-performance - Inspector loaded into webpage');
 
   if (document.readyState === 'complete'){
@@ -44,6 +46,8 @@
 
     console.log('inspector.js - bootstrapping application');
 
+    _angularInjector = angular.element(document.querySelector('[ng-app]')).injector().get;
+
     var $rootScope = getRootScope();
     var scopePrototype = Object.getPrototypeOf($rootScope);
     var oldDigest = scopePrototype.$digest;
@@ -68,9 +72,15 @@
       var message = event.data;
 
       if (message.task === 'checkModuleName'){
+
+        var moduleServices = getNgModuleServices(message.moduleName);
+
+        // If there is no services the method will return an empty object, if the module name is
+        // invalid, it will return undefined.
+
         sendTask('reportModuleExistence', {
           moduleName: message.moduleName,
-          existing: checkNgModuleExistance(message.moduleName)
+          services: (moduleServices) ? Object.keys(moduleServices) : undefined
         });
       }
     });
@@ -253,21 +263,36 @@
   // ------------------------------------------------------------------------------------------
 
   /**
-   * Checks whether or not an angular module exists in the page context.
+   * Gets all the services name from the specified module
    *
-   * @param {String} moduleName
-   * @returns {boolean}
+   * @param {String}  moduleName - name of the module to get the services from
+   * @param {Object}  [services] - already found services (parent module) can be null
+   * @returns {Object|undefined} map of all the angular services linked to the specified module.
+   *                             returns undefined if the module isn't defined
    */
-  function checkNgModuleExistance(moduleName){
-    var toReturn = true;
+  function getNgModuleServices(moduleName, services){
 
-    try {
-      angular.module(moduleName);
-    } catch (e){
-      toReturn = false;
+    if (!services) {
+      services = {};
     }
 
-    return toReturn;
+    try {
+      var module = angular.module(moduleName);
+    } catch(e){
+      return;
+    }
+
+    angular.forEach(module._invokeQueue, function(service) {
+      if (service[0] === '$provide' && service[1] === 'service') {
+        services[service[2][0]] = _angularInjector(service[2][0]);
+      }
+    });
+
+    angular.forEach(module.requires, function(dependencyModule) {
+      getNgModuleServices(dependencyModule, services)
+    });
+
+    return services;
   }
 
 

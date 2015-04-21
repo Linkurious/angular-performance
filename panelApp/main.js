@@ -41,7 +41,8 @@ backgroundPageConnection.onMessage.addListener(function(message){
       registry.registerWatcherCount(message.data.timestamp, message.data.watcher);
       break;
     case 'reportModuleExistence':
-      servicePanelCtrl.printModuleNameCheck(message.data.existing);
+      console.log(message);
+      servicePanelCtrl.printModuleNameCheck(message.data.services);
       break;
     default:
       console.log('Unknown task ', message);
