@@ -8,6 +8,8 @@
 
 This is a chrome extension aimed at monitoring angular application performance.
 
+Tested with: angular 1.2.28
+
 ## Build
 
 ### Requirements

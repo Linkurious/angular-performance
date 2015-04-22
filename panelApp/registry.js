@@ -15,12 +15,15 @@ function Registry(){
     BUFFER_MAX_ELEMENT = 300;
 
   var
+    // Raw data
     _digestTiming = [],
     _digestTimingDistribution = {},
     _events = [],
     _watcherCount = [],
     _watcherCountDistribution = {},
+    _functionTimings = {},
 
+    // Plot data
     _digestTimingDistributionPlotData = [],
     _digestTimingPlotData = [],
     _digestRatePlotData = [],
@@ -329,6 +332,117 @@ function Registry(){
     }
 
     return _watcherCountDistributionPlotData;
+  };
+
+  // ------------------------------------------------------------------------------------------
+  //                              Service Functions execution times
+  // ------------------------------------------------------------------------------------------
+
+  /**
+   * Registers a sync function execution into the registry. The data structure is stored as follow in
+   * _functionTimings:
+   *
+   * The first key represents the angular module
+   * The second key represents the service
+   * The last key represents the function
+   *
+   * ex:
+   * _functionTiming['ng-app']['MainService']['addSomething']
+   *
+   * That objects stores the number of calls to the function, the average sync execution time and the
+   * async execution time.
+   *
+   * @param {Object} executionMessage - Object representing a function execution
+   * @param {String} executionMessage.module - module containing the service from which is executed
+   *                                           the function
+   * @param {String} executionMessage.service - service from which is executed the function
+   * @param {String} executionMessage.func - the executed function
+   * @param {String} executionMessage.time - the sync execution time of the function
+   */
+  self.registerSyncExecution = function(executionMessage){
+
+    if (!_functionTimings[executionMessage.module]){
+      _functionTimings[executionMessage.module] = {};
+    }
+
+    if (!_functionTimings[executionMessage.module][executionMessage.service]){
+      _functionTimings[executionMessage.module][executionMessage.service] = {};
+    }
+
+    var service = _functionTimings[executionMessage.module][executionMessage.service];
+
+    if (!service[executionMessage.func]){
+      service[executionMessage.func] = {
+        count: 1,
+        syncExecTime: Math.round(executionMessage.time),
+        asyncExecTime: 0,
+        impactScore: Math.round(executionMessage.time)
+      }
+    } else {
+      service[executionMessage.func].count++;
+      service[executionMessage.func].syncExecTime =
+        Math.round((service[executionMessage.func].syncExecTime + executionMessage.time) / 2);
+      service[executionMessage.func].impactScore =
+        (service[executionMessage.func].syncExecTime + service[executionMessage.func].asyncExecTime) * service[executionMessage.func].count / 100;
+    }
+  };
+
+  /**
+   * Registers an qsync function execution into the registry.
+   *
+   * @see registerSyncExecution for data structure
+   *
+   * @param {Object} executionMessage - Object representing a function execution
+   * @param {String} executionMessage.module - module containing the service from which is executed
+   *                                           the function
+   * @param {String} executionMessage.service - service from which is executed the function
+   * @param {String} executionMessage.func - the executed function
+   * @param {String} executionMessage.time - the async execution time of the function
+   */
+  self.registerASyncExecution = function(executionMessage){
+    var service = _functionTimings[executionMessage.module][executionMessage.service];
+
+    service[executionMessage.func].asyncExecTime =
+      Math.round((service[executionMessage.func].asyncExecTime + executionMessage.time) / 2);
+    service[executionMessage.func].impactScore =
+      (service[executionMessage.func].syncExecTime + service[executionMessage.func].asyncExecTime) * service[executionMessage.func].count / 100;
+  };
+
+  /**
+   * Gets the module data function execution in a sorted array by most impact first
+   *
+   * @param {String} module   - module to get the data from
+   * @param {Number} [limit]  - only returns the <limit> most impacting function executions
+   * @returns {Array}
+   */
+  self.getModuleFunctionsExecutionData = function(module, limit){
+
+    var toReturn = [];
+
+    _.forEach(_functionTimings[module], function(functions, service){
+      _.forEach(functions, function(execData, func){
+        toReturn.push({
+          service: service,
+          func: func,
+          syncExecTime: execData.syncExecTime,
+          asyncExecTime: execData.asyncExecTime,
+          count: execData.count,
+          impactScore: execData.impactScore
+        });
+      });
+    });
+
+    // We want to have result from the function that has most impact on the software to the one that
+    // has the less impact.
+    toReturn = _.sortBy(toReturn, function(execData){
+      return - execData.impactScore
+    });
+
+    if(limit){
+      toReturn = _.take(toReturn, limit);
+    }
+
+    return toReturn;
   };
 
   /**

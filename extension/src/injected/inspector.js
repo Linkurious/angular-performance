@@ -12,7 +12,8 @@
 (function() {
   'use strict';
 
-  var _angularInjector;
+  var
+    _angularInjector;
 
   console.log('angular-performance - Inspector loaded into webpage');
 
@@ -82,6 +83,8 @@
           moduleName: message.moduleName,
           services: (moduleServices) ? Object.keys(moduleServices) : undefined
         });
+      } else if (message.task === 'instrumentModuleServices'){
+        instrumentModuleServices(message.moduleName);
       }
     });
 
@@ -295,6 +298,65 @@
     return services;
   }
 
+  /**
+   * This methods adds timers to all the functions of all the services of a given module
+   *
+   * @param {String} moduleName - module name to instrument.
+   */
+  function instrumentModuleServices(moduleName){
+
+    var services = getNgModuleServices(moduleName);
+
+    angular.forEach(Object.keys(services), function(serviceName){
+
+      var service = services[serviceName];
+
+      angular.forEach(Object.getOwnPropertyNames(service), function(propertyName){
+
+        // Early return for all properties that are not functions
+        if (typeof service[propertyName] !== 'function' || propertyName === 'constructor') {
+          return;
+        }
+
+        var functionToWrap = service[propertyName];
+
+        // We Wrap all the service functions to measure execution time.
+        service[propertyName] = function(){
+          var
+            start = performance.now(),
+            // Execute the function as usual
+            result = functionToWrap.apply(this, arguments);
+
+          // Register execution time in the extension registry
+          register('SyncServiceFunctionCall', {
+            module: moduleName,
+            service: serviceName,
+            func: propertyName,
+            time: performance.now() - start
+          });
+
+          // We only consider promises since it is the default async handling in angular.
+          if (result && typeof result.then === 'function') {
+            // We reset the timer so that only async time gets taken.
+            start = performance.now();
+
+            // We Append our timing promise to the actual promise
+            result.then(function() {
+              register('ASyncServiceFunctionCall', {
+                module: moduleName,
+                service: serviceName,
+                func: propertyName,
+                time: performance.now() - start
+              });
+            })
+          }
+          return result;
+        }
+      })
+    });
+
+    console.log('Module: ' + moduleName + ' successfully instrumented');
+  }
 
   // ------------------------------------------------------------------------------------------
   //                                        Utils

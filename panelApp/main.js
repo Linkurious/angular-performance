@@ -17,7 +17,7 @@ var
 
 var
   registry = new Registry(),
-  servicePanelCtrl = new ServicePanelCtrl(backgroundPageConnection);
+  servicePanelCtrl = new ServicePanelCtrl(backgroundPageConnection, registry);
 
 // Initialize all services with the registry (should be a singleton)
 InstantMetrics.initRegistry(registry);
@@ -40,9 +40,16 @@ backgroundPageConnection.onMessage.addListener(function(message){
       InstantMetrics.updateWatcherCount(message.data.watcher.watcherCount);
       registry.registerWatcherCount(message.data.timestamp, message.data.watcher);
       break;
+    case 'registerSyncServiceFunctionCall':
+      registry.registerSyncExecution(message.data);
+      servicePanelCtrl.refreshModulePanels();
+      break;
+    case 'registerASyncServiceFunctionCall':
+      registry.registerASyncExecution(message.data);
+      servicePanelCtrl.refreshModulePanels();
+      break;
     case 'reportModuleExistence':
-      console.log(message);
-      servicePanelCtrl.printModuleNameCheck(message.data.services);
+      servicePanelCtrl.printModuleNameCheck(message.data.moduleName, message.data.services);
       break;
     default:
       console.log('Unknown task ', message);

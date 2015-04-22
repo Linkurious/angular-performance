@@ -19,7 +19,7 @@
   "scripts": {
     "copyFonts": "cp ./node_modules/font-awesome/fonts/* ./extension/fonts/ & cp ./node_modules/bootstrap/fonts/* ./extension/fonts/",
     "copyBootstrap": "cp ./node_modules/bootstrap/dist/js/bootstrap.min.js ./extension/src/vendors/",
-    "copyMetisMenu": "cp ./node_modules/metismenu/dist/metisMenu.min.js ./extension/src/vendors;",
+    "copyMetisMenu": "cp ./node_modules/metismenu/dist/metisMenu.min.js ./extension/src/vendors/",
     "copyJs": "npm run copyBootstrap & npm run copyMetisMenu",
     "compileVendorCSS": "rework-npm extension/css/dependencies.css | cleancss -o extension/css/vendors.css",
     "compilePanelJs": "browserify panelApp/main.js -o extension/src/panel/panel.js",
