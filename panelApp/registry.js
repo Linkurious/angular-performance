@@ -376,7 +376,7 @@ function Registry(){
         count: 1,
         syncExecTime: Math.round(executionMessage.time),
         asyncExecTime: 0,
-        impactScore: Math.round(executionMessage.time)
+        impactScore: Math.round(executionMessage.time) /100
       }
     } else {
       service[executionMessage.func].count++;

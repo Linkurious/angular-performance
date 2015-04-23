@@ -8,6 +8,7 @@ var
  * Controller used for the Service panel. It directly modifies the interface
  *
  * @param {Port} pageConnection - direct connection to the background script
+ * @param {Registry} registry - registry containing all the reported values
  * @constructor
  */
 function ServicePanelController (pageConnection, registry){
@@ -86,15 +87,32 @@ function ServicePanelController (pageConnection, registry){
           '<div class="panel panel-default">'+
             '<div class="panel-heading">'+
               '<b> Module:  </b>' + moduleName +
-              '<div class="btn-group pull-right" role="group" aria-label="...">'+
-                '<button type="button" class="btn btn-danger btn-xs removeModuleInstrumentationButton">' +
-                  '<span class="glyphicon glyphicon-minus"></span>' +
-                '</button>'+
-              '</div>'+
+              /* TODO code instrumentation cleanup in the inspector
+              '<div class="pull-right">' +
+                '<div class="btn-group">'+
+                  '<button type="button" class="btn btn-danger btn-xs removeModuleInstrumentationButton">' +
+                    '<span class="glyphicon glyphicon-minus"></span>' +
+                  '</button>' +
+                '</div>'+
+              '</div>' +
+              */
             '</div>'+
 
-            '<div class="panel-body">'+
-
+            '<div class="panel-body">' +
+              '<form class="form-horizontal" novalidate>' +
+                '<div class="form-group">'+
+                  '<label for="tableLength" class="col-sm-2 control-label">Table length</label>' +
+                  '<div class="col-sm-4">'+
+                    '<input ' +
+                      'id="tableLength"' +
+                      'type="number" ' +
+                      'class="form-control" ' +
+                      'name="tableLines" ' +
+                      'min="1" ' +
+                      'value="10">' +
+                  '</div>'+
+                '</div>'+
+              '</form>' +
             '</div>'+
           '</div>' +
         '</div>' +
@@ -104,12 +122,23 @@ function ServicePanelController (pageConnection, registry){
 
     var panel = $('#panelFor' + moduleName);
 
+    panel.find('input').bind('keyup mouseup', _.debounce(function(){
+      self.refreshModulePanels();
+    }, 200));
+
     panel.find('.removeModuleInstrumentationButton').click(function(){
       panel.remove();
       _.remove(_addedModules, function(value){
         return value === moduleName;
       });
     });
+
+    panel.find('form').keypress(function(e){
+      var charCode = e.charCode || e.keyCode || e.which;
+      if (charCode  == 13) {
+        return false;
+      }
+    })
   };
 
   /**
@@ -117,12 +146,12 @@ function ServicePanelController (pageConnection, registry){
    */
   self.refreshModulePanels = _.throttle(function(){
 
-    var table, panelBody;
+    var table, panel, panelBody;
 
     _.forEach(_addedModules, function(module){
 
-      panelBody = $('#panelFor' + module).find('.panel-body');
-
+      panel = $('#panelFor' + module);
+      panelBody = panel.find('.table-responsive');
       panelBody.empty();
 
       // TODO Can be included in the addModule Function for more efficiency
@@ -131,6 +160,7 @@ function ServicePanelController (pageConnection, registry){
           '<table class="table table-bordered table-hover table-striped">' +
             '<thead>' +
               '<tr>' +
+                '<th>#</th>' +
                 '<th>Service</th>' +
                 '<th>Function</th>' +
                 '<th>Sync Execution Time (ms)</th>' +
@@ -144,9 +174,10 @@ function ServicePanelController (pageConnection, registry){
           '</table>' +
         '</div>');
 
-      _.forEach(registry.getModuleFunctionsExecutionData(module), function(execData){
+      _.forEach(registry.getModuleFunctionsExecutionData(module, panel.find('input').val()), function(execData, index){
         table.find('tbody').append('' +
           '<tr>' +
+            '<td>' + (index+1) + '</td>' +
             '<td>' + execData.service + '</td>' +
             '<td>' + execData.func + '</td>' +
             '<td>' + execData.syncExecTime + '</td>' +
@@ -156,7 +187,7 @@ function ServicePanelController (pageConnection, registry){
           '</tr>');
       });
 
-      panelBody.append(table);
+      panel.find('.panel-body').append(table);
     });
   }, 500);
 

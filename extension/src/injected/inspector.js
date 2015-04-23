@@ -314,7 +314,12 @@
       angular.forEach(Object.getOwnPropertyNames(service), function(propertyName){
 
         // Early return for all properties that are not functions
-        if (typeof service[propertyName] !== 'function' || propertyName === 'constructor') {
+        // arguments is a reserved property name
+        if (propertyName === 'arguments' ||
+            propertyName === 'caller' ||
+            propertyName === 'callee' ||
+            typeof service[propertyName] !== 'function' ||
+            propertyName === 'constructor') {
           return;
         }
 

@@ -71,12 +71,12 @@ function generateXPath(element) {
   if (element.id !== ''){
     return 'id("' + element.id + '")';
   }
-  if (element === document.body) {
+  if (element === document.body || element.parentNode === null) {
     return element.tagName;
   }
 
-  var ix= 0;
-  var siblings= element.parentNode.childNodes;
+  var ix = 0;
+  var siblings = element.parentNode.childNodes;
 
   for (var i = 0 ; i < siblings.length ; i++) {
     var sibling = siblings[i];

@@ -44,13 +44,15 @@
             <div class="sidebar-nav navbar-collapse">
                 <ul class="nav" id="side-menu">
                     <li>
-                        <a id="homeTabButton" href="#" class="active"><i class="fa fa-dashboard fa-fw"></i> General</a>
+                        <a id="homeTabButton" href="#" class="active"><i class="fa fa-area-chart fa-fw"></i> General</a>
                     </li>
+                    <!-- TODO
                     <li>
                         <a id="scopeTabButton" href="#"><i class="fa fa-dashboard fa-fw"></i> Scope</a>
                     </li>
+                    -->
                     <li>
-                        <a id="detailTimingTabButton" href="#"><i class="fa fa-dashboard fa-fw"></i> Time Exec Stats</a>
+                        <a id="detailTimingTabButton" href="#"><i class="fa fa-dashboard fa-fw"></i> Function Timing</a>
                     </li>
                 </ul>
             </div>
@@ -69,7 +71,7 @@
                         <div class="panel-heading">
                             <div class="row">
                                 <div class="col-xs-3">
-                                    <i class="fa fa-comments fa-5x"></i>
+                                    <i class="fa fa-eye fa-5x"></i>
                                 </div>
                                 <div class="col-xs-9 text-right">
                                     <div class="huge"><span id="instantWatcherCount" >0</span></div>
@@ -91,7 +93,7 @@
                         <div class="panel-heading">
                             <div class="row">
                                 <div class="col-xs-3">
-                                    <i class="fa fa-tasks fa-5x"></i>
+                                    <i class="fa fa-refresh fa-5x"></i>
                                 </div>
                                 <div class="col-xs-9 text-right">
                                     <div class="huge"><span id="instantDigestTime" >0</span> ms</div>
@@ -113,7 +115,7 @@
                         <div class="panel-heading">
                             <div class="row">
                                 <div class="col-xs-3">
-                                    <i class="fa fa-shopping-cart fa-5x"></i>
+                                    <i class="fa fa-signal fa-5x"></i>
                                 </div>
                                 <div class="col-xs-9 text-right">
                                     <div class="huge"><span id="instantDigestRate">0</span> /s</div>
@@ -135,7 +137,7 @@
                         <div class="panel-heading">
                             <div class="row">
                                 <div class="col-xs-3">
-                                    <i class="fa fa-support fa-5x"></i>
+                                    <i class="fa fa-play fa-5x"></i>
                                 </div>
                                 <div class="col-xs-9 text-right">
                                     <div class="huge">0</div>
@@ -292,7 +294,7 @@
             <!-- /.row -->
         </div>
         <!-- Main Tab -->
-        <div id="detailTimingTab">
+        <div id="detailTimingTab" style="display: none;">
             <div class="row">
                 <div class="col-lg-12">
                     <div class="alert alert-info alert-dismissible" role="alert">
