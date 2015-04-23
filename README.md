@@ -43,11 +43,11 @@ $ npm run build
 * Digest rate monitoring
 * Digest times distribution
 * Watcher count monitoring
+* Services async and sync timing
 
 ### Roadmap
-* FPS renderding monitoring
+* FPS rendering monitoring
 * Scopes inspection (respective value and digesting time)
-* Services async and sync timing
 * Dependency analysis
 
 ## License

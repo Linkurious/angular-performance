@@ -99,20 +99,33 @@ function ServicePanelController (pageConnection, registry){
             '</div>'+
 
             '<div class="panel-body">' +
-              '<form class="form-horizontal" novalidate>' +
-                '<div class="form-group">'+
-                  '<label for="tableLength" class="col-sm-2 control-label">Table length</label>' +
-                  '<div class="col-sm-4">'+
-                    '<input ' +
-                      'id="tableLength"' +
-                      'type="number" ' +
-                      'class="form-control" ' +
-                      'name="tableLines" ' +
-                      'min="1" ' +
-                      'value="10">' +
-                  '</div>'+
-                '</div>'+
-              '</form>' +
+              '<div class="row">' +
+                '<div class="col-sm-4">' +
+                  '<form class="form-horizontal">' +
+                    '<div class="form-group">'+
+                      '<label for="tableLength" class="col-sm-6 control-label">Table length</label>' +
+                      '<div class="col-sm-6">'+
+                        '<input ' +
+                          'id="tableLength"' +
+                          'type="number" ' +
+                          'class="form-control" ' +
+                          'name="tableLines" ' +
+                          'min="1" ' +
+                          'value="10">' +
+                      '</div>'+
+                    '</div>'+
+                  '</form>' +
+                '</div>' +
+                '<div class="col-sm-offset-6  col-sm-1">' +
+                  '<form class="form-horizontal">' +
+                    '<div class="form-group">'+
+                      '<div class="pull-right">'+
+                        '<button type="button" id="clearDataFor'+ moduleName +'" class="btn btn-danger">Clear Data</button>' +
+                      '</div>'+
+                    '</div>'+
+                  '</form>' +
+                '</div>' +
+              '</div>' +
             '</div>'+
           '</div>' +
         '</div>' +
@@ -138,7 +151,12 @@ function ServicePanelController (pageConnection, registry){
       if (charCode  == 13) {
         return false;
       }
-    })
+    });
+
+    $('#clearDataFor' + moduleName).click(function(){
+      registry.clearModuleFunctionExecutionData(moduleName);
+      self.refreshModulePanels();
+    });
   };
 
   /**

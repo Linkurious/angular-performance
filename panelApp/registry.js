@@ -446,13 +446,22 @@ function Registry(){
   };
 
   /**
+   * Clears out all the registered data for a registered module
+   *
+   * @param {String} moduleName - name of the module to clear the data from
+   */
+  self.clearModuleFunctionExecutionData = function(moduleName){
+    _functionTimings[moduleName] = {};
+  };
+
+  /**
    * Gets the location map that makes the correspondence between the Location and their id
    *
    * @returns {{}}
    */
   self.getLocationMap = function(){
     return _locationMap;
-  }
+  };
 }
 
 module.exports = Registry;
