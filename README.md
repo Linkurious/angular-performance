@@ -27,7 +27,10 @@ $ npm run build
 ```
 
 ## Install
+###From the Chrome Web Store
+[WebStore Link](https://chrome.google.com/webstore/detail/angular-performance/hejbpbhdhhchmmcgmccpnngfedalkmkm)
 
+### Manual
 * Clone the repo
 * Go into the Chrome main menu -> more tools -> extension 
 * Enable developer mode
