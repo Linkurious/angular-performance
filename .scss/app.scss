@@ -13,3 +13,15 @@
 #digest-time-distribution-range-slider{
   margin-top: 20px;
 }
+
+.rickshaw_annotation_timeline .annotation.active .content {
+  display: inline-block;
+}
+
+.rickshaw_annotation_timeline .annotation:hover .content{
+  display: inline-block;
+}
+
+.rickshaw_annotation_timeline .annotation .content {
+  width: auto;
+}
