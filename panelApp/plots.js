@@ -18,7 +18,7 @@ var
 /**
  * Initializes the registry reference.
  *
- * @param registry
+ * @param {Object} registry - registry object of the app. This should be the current instance reference.
  */
 Plots.initRegistry = function(registry){
   _registry = registry;
