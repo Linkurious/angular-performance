@@ -161,7 +161,7 @@ chrome.runtime.onConnect.addListener(function(port){
 // We want to inject the content-script again if the page is refreshed
 chrome.tabs.onUpdated.addListener(function(tabId, changeInfo){
   // The page has to be completely loaded before we inject the content script inside.
-  if (changeInfo.status === 'complete') {
+  if (changeInfo.status === 'complete' && panelConnections[tabId]) {
     chrome.tabs.executeScript(tabId, {
       file: 'src/injected/content-script.js'
     });
