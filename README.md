@@ -32,9 +32,9 @@ $ npm run build
 
 ### Manual
 * Clone the repo
+* Build the extension (see above)
 * Go into the Chrome main menu -> more tools -> extension 
 * Enable developer mode
-* Build the extension
 * Load unpacked extension
 * select the `extension` folder
 
