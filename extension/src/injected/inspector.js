@@ -318,8 +318,10 @@
       services = {};
     }
 
+    var module;
+
     try {
-      var module = angular.module(moduleName);
+      module = angular.module(moduleName);
     } catch(e){
       return;
     }
