@@ -52,6 +52,7 @@ $ npm run build
 * FPS rendering monitoring
 * Scopes inspection (respective value and digesting time)
 * Dependency analysis
+* Back up collected data on a remote server
 
 ## License
 See [LICENSE](LICENSE) file.
