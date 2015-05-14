@@ -3,6 +3,12 @@
 var $ = require('jquery');
 var _ = require('lodash');
 
+/**
+ * This module handles the change between the panel tabs.
+ * It both handles showing/hiding elements and stopping rendering when not necessary.
+ *
+ * @param {Object} plots - Plot object of the panel app.
+ */
 function tabHandler(plots){
 
   var self = this;

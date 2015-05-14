@@ -17,3 +17,18 @@
 #digest-time-distribution-range-slider {
   margin-top: 20px;
 }
+
+/* line 17, ../../.scss/app.scss */
+.rickshaw_annotation_timeline .annotation.active .content {
+  display: inline-block;
+}
+
+/* line 21, ../../.scss/app.scss */
+.rickshaw_annotation_timeline .annotation:hover .content {
+  display: inline-block;
+}
+
+/* line 25, ../../.scss/app.scss */
+.rickshaw_annotation_timeline .annotation .content {
+  width: auto;
+}

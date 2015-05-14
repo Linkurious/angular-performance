@@ -13,7 +13,12 @@
   'use strict';
 
   var
-    _angularInjector;
+    _angularInjector,
+    _isMonitoringActive = true,
+    _backUp = {
+      digest: null,
+      modules: {}
+    };
 
   console.log('angular-performance - Inspector loaded into webpage');
 
@@ -36,6 +41,40 @@
         source: 'angular-performance-inspector'
       }, '*');
 
+      // We listen for async instrumentation instructions
+      window.addEventListener('message', function(event){
+        // We only accept messages from ourselves
+        if (event.source != window || event.data.source !== 'angular-performance') {
+          return;
+        }
+
+        var message = event.data;
+
+        switch (message.task){
+
+          case 'checkModuleName':
+            var moduleServices = getNgModuleServices(message.moduleName);
+            // If there is no services the method will return an empty object, if the module name is
+            // invalid, it will return undefined.
+            sendTask('reportModuleExistence', {
+              moduleName: message.moduleName,
+              services: (moduleServices) ? Object.keys(moduleServices) : undefined
+            });
+            break;
+
+          case 'instrumentModuleServices':
+            instrumentModuleServices(message.moduleName);
+            break;
+
+          case 'cleanUpInspectedApp':
+            _isMonitoringActive = false;
+            cleanUpInspectedApp();
+            // Once everything is cleaned up, we can remove this script from the DOM
+            sendTask('removeInspector');
+            break;
+        }
+      });
+
       bootstrapInspector();
     }
   }
@@ -49,47 +88,52 @@
 
     _angularInjector = angular.element(document.querySelector('[ng-app]')).injector().get;
 
-    var $rootScope = getRootScope();
-    var scopePrototype = Object.getPrototypeOf($rootScope);
-    var oldDigest = scopePrototype.$digest;
+    instrumentDigest();
+    initWatcherCount();
+  }
+
+  /**
+   * This should clean up all that has been instrumented by the inspector and get them back
+   * to their normal behaviour. (UnWrap everything)
+   */
+  function cleanUpInspectedApp(){
+    restoreDigest();
+    restoreModuleServices();
+  }
+
+  // ------------------------------------------------------------------------------------------
+  //                                     Digest Monitoring
+  // ------------------------------------------------------------------------------------------
+
+  /**
+   * Wraps the angular digest so that we can measure how long it take for the digest to happen.
+   */
+  function instrumentDigest(){
+
+    var scopePrototype = Object.getPrototypeOf(getRootScope());
+    _backUp.digest = scopePrototype.$digest;
 
     scopePrototype.$digest = function $digest() {
       var start = performance.now();
-      oldDigest.apply(this, arguments);
+      _backUp.digest.apply(this, arguments);
       var time = (performance.now() - start);
       register('DigestTiming', {
         timestamp: Date.now(),
         time: time
       });
     };
-
-    // We listen for async instrumentation instructions
-    window.addEventListener('message', function(event){
-      // We only accept messages from ourselves
-      if (event.source != window || event.data.source !== 'angular-performance') {
-        return;
-      }
-
-      var message = event.data;
-
-      if (message.task === 'checkModuleName'){
-
-        var moduleServices = getNgModuleServices(message.moduleName);
-
-        // If there is no services the method will return an empty object, if the module name is
-        // invalid, it will return undefined.
-
-        sendTask('reportModuleExistence', {
-          moduleName: message.moduleName,
-          services: (moduleServices) ? Object.keys(moduleServices) : undefined
-        });
-      } else if (message.task === 'instrumentModuleServices'){
-        instrumentModuleServices(message.moduleName);
-      }
-    });
-
-    initWatcherCount();
   }
+
+  /**
+   * Restores the classic angular digest.
+   */
+  function restoreDigest(){
+    Object.getPrototypeOf(getRootScope()).$digest = _backUp.digest;
+  }
+
+  // ------------------------------------------------------------------------------------------
+  //                                Scope & Watcher Exploration
+  // ------------------------------------------------------------------------------------------
 
   /**
    * Function to be called once to init the watcher retrieval.
@@ -102,13 +146,10 @@
         location: window.location.href
       }
     });
-    setTimeout(initWatcherCount, 300);
+    if (_isMonitoringActive) {
+      setTimeout(initWatcherCount, 300);
+    }
   }
-
-  // ------------------------------------------------------------------------------------------
-  //                                Scope & Watcher Exploration
-  // ------------------------------------------------------------------------------------------
-
 
   /**
    * Retrieves the watcher count for a particular scope
@@ -279,8 +320,10 @@
       services = {};
     }
 
+    var module;
+
     try {
-      var module = angular.module(moduleName);
+      module = angular.module(moduleName);
     } catch(e){
       return;
     }
@@ -305,10 +348,12 @@
    */
   function instrumentModuleServices(moduleName){
 
+    _backUp.modules[moduleName] = {};
     var services = getNgModuleServices(moduleName);
 
     angular.forEach(Object.keys(services), function(serviceName){
 
+      _backUp.modules[moduleName][serviceName] = {};
       var service = services[serviceName];
 
       angular.forEach(Object.getOwnPropertyNames(service), function(propertyName){
@@ -323,7 +368,7 @@
           return;
         }
 
-        var functionToWrap = service[propertyName];
+        var functionToWrap = _backUp.modules[moduleName][serviceName][propertyName] = service[propertyName];
 
         // We Wrap all the service functions to measure execution time.
         service[propertyName] = function(){
@@ -363,6 +408,43 @@
     console.log('Module: ' + moduleName + ' successfully instrumented');
   }
 
+  /**
+   * Restores the services functions as they were before being wrapped
+   *
+   * @param {String} [moduleName] - name of the module to be unwrapped. If not mentioned, everything
+   *                                should be restored.
+   */
+  function restoreModuleServices(moduleName){
+
+    var modules;
+
+    if (moduleName){
+
+      if (_backUp.modules[moduleName]) {
+        modules = [moduleName];
+      } else {
+        throw new Error('angular performance - We tried to restore the module '+ moduleName + 'but ' +
+          'we could not find any back up :(');
+      }
+
+    } else {
+      modules = Object.keys(_backUp.modules);
+    }
+
+    angular.forEach(modules, function(module){
+      var services = getNgModuleServices(module);
+
+      angular.forEach(Object.keys(_backUp.modules[module]), function(service){
+        angular.forEach(Object.keys(_backUp.modules[module][service]), function(fnName){
+          services[service][fnName] = _backUp.modules[module][service][fnName]
+        });
+      });
+
+      // Clean up back up
+      delete _backUp.modules[module];
+    });
+  }
+
   // ------------------------------------------------------------------------------------------
   //                                        Utils
   // ------------------------------------------------------------------------------------------
@@ -371,7 +453,7 @@
    * Reports a metric
    *
    * @param {String} task  - task to do
-   * @param {Object} value - data that can be sent along with the task
+   * @param {Object} [value] - data that can be sent along with the task
    */
   function sendTask(task, value){
     window.postMessage({

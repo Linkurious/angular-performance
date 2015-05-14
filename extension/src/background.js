@@ -62,6 +62,7 @@ chrome.runtime.onConnect.addListener(function(port){
     }
 
     if (sender.tab) {
+
       var tabId = sender.tab.id;
 
       if (!contentScriptConnections[tabId]){
@@ -73,7 +74,7 @@ chrome.runtime.onConnect.addListener(function(port){
       } else if (tabId in panelConnections) {
         panelConnections[tabId].postMessage(message);
       } else {
-        console.log('background.js - Tab not found in connection list.');
+        console.log('background.js - Tab not found in connection list.', sender.tab.id, panelConnections);
       }
     } else {
       console.log('background.js - sender.tab not defined.');
@@ -93,7 +94,6 @@ chrome.runtime.onConnect.addListener(function(port){
       panelConnections[message.tabId] = port
 
     } else if (message.task === 'sendTaskToInspector') {
-
       contentScriptConnections[message.tabId].postMessage(message.data)
 
     } else if (message.task === 'log'){
@@ -136,6 +136,14 @@ chrome.runtime.onConnect.addListener(function(port){
 
     port.onDisconnect.addListener(function(){
       port.onMessage.removeListener(contentScriptListener);
+
+      var tabs = Object.keys(contentScriptConnections);
+      for (var i=0, len=tabs.length; i < len; i++) {
+        if (contentScriptConnections[tabs[i]] == port) {
+          delete contentScriptConnections[tabs[i]];
+          break;
+        }
+      }
     });
 
 
@@ -148,12 +156,27 @@ chrome.runtime.onConnect.addListener(function(port){
       port.onMessage.removeListener(panelListener);
 
       var tabs = Object.keys(panelConnections);
-      for (var i=0, len=tabs.length; i < len; i++) {
+      for (var i = 0, len = tabs.length; i < len ; i++) {
         if (panelConnections[tabs[i]] == port) {
           delete panelConnections[tabs[i]];
+          // On panel closing, clean up the tab from all wrapped functions and removes the injector.js
+          contentScriptConnections[tabs[i]].postMessage({
+            task: 'cleanUpInspectedApp',
+            source: 'angular-performance'
+          });
           break;
         }
       }
+    });
+  }
+});
+
+// We want to inject the content-script again if the page is refreshed
+chrome.tabs.onUpdated.addListener(function(tabId, changeInfo){
+  // The page has to be completely loaded before we inject the content script inside.
+  if (changeInfo.status === 'complete' && panelConnections[tabId]) {
+    chrome.tabs.executeScript(tabId, {
+      file: 'src/injected/content-script.js'
     });
   }
 });

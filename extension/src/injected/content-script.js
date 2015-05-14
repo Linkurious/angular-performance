@@ -105,6 +105,13 @@ window.addEventListener('message', function(event) {
     return;
   }
 
+  if (message.task === 'removeInspector'){
+    // removes the inspector from the DOM
+    var inspector = document.getElementById("angular-performance-inspector");
+    inspector.parentNode.removeChild(inspector);
+    return;
+  }
+
   backgroundPageConnection.postMessage(message);
 }, false);
 
@@ -129,6 +136,7 @@ USER_EVENTS.forEach(function(eventType){
 // Add injected script to the page
 var script = document.createElement('script');
 script.type = 'text/javascript';
+script.id = 'angular-performance-inspector';
 script.src = chrome.extension.getURL('src/injected/inspector.js');
 document.head.appendChild(script);
 

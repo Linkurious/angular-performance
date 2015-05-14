@@ -12,7 +12,7 @@ var
 /**
  * Initializes the registry reference.
  *
- * @param registry
+ * @param {Object} registry - registry object of the app. This should be the current instance reference.
  */
 instantMetrics.initRegistry = function(registry){
   _registry = registry;
@@ -37,7 +37,7 @@ instantMetrics.updateDigestCount = function(){
 /**
  * Updates the panel with the last Watcher count
  *
- * @param {Number} count
+ * @param {Number} count - watcher count to be displayed in the instant panel.
  */
 instantMetrics.updateWatcherCount = function(count){
   $('#instantWatcherCount').text(count);

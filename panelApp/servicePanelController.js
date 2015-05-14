@@ -148,7 +148,7 @@ function ServicePanelController (pageConnection, registry){
 
     panel.find('form').keypress(function(e){
       var charCode = e.charCode || e.keyCode || e.which;
-      if (charCode  == 13) {
+      if (charCode  === 13) {
         return false;
       }
     });
