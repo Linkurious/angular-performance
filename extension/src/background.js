@@ -156,9 +156,14 @@ chrome.runtime.onConnect.addListener(function(port){
       port.onMessage.removeListener(panelListener);
 
       var tabs = Object.keys(panelConnections);
-      for (var i=0, len=tabs.length; i < len; i++) {
+      for (var i = 0, len = tabs.length; i < len ; i++) {
         if (panelConnections[tabs[i]] == port) {
           delete panelConnections[tabs[i]];
+          // On panel closing, clean up the tab from all wrapped functions and removes the injector.js
+          contentScriptConnections[tabs[i]].postMessage({
+            task: 'cleanUpInspectedApp',
+            source: 'angular-performance'
+          });
           break;
         }
       }

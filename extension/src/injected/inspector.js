@@ -69,6 +69,8 @@
           case 'cleanUpInspectedApp':
             _isMonitoringActive = false;
             cleanUpInspectedApp();
+            // Once everything is cleaned up, we can remove this script from the DOM
+            sendTask('removeInspector');
             break;
         }
       });
@@ -451,7 +453,7 @@
    * Reports a metric
    *
    * @param {String} task  - task to do
-   * @param {Object} value - data that can be sent along with the task
+   * @param {Object} [value] - data that can be sent along with the task
    */
   function sendTask(task, value){
     window.postMessage({
