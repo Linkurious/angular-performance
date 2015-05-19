@@ -32,6 +32,7 @@ $ npm run build
 
 ### Manual
 * Clone the repo
+* **(Optional)** Switch to the develop git branch (Latest version)
 * Build the extension (see above)
 * Go into the Chrome main menu -> more tools -> extension 
 * Enable developer mode
