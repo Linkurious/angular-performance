@@ -31,13 +31,13 @@ $ npm run build
 [WebStore Link](https://chrome.google.com/webstore/detail/angular-performance/hejbpbhdhhchmmcgmccpnngfedalkmkm)
 
 ### Manual
-* Clone the repo
+* Clone the repository
 * **(Optional)** Switch to the develop git branch (Latest version)
 * Build the extension (see above)
 * Go into the Chrome main menu -> more tools -> extension 
 * Enable developer mode
 * Load unpacked extension
-* select the `extension` folder
+* select the `extension` folder of this repository
 
 ## Features
 
