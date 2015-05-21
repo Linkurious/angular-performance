@@ -1,5 +1,17 @@
 # Change Log
 
+## [0.0.3](https://github.com/Linkurious/angular-performance/tree/0.0.3) (2015-05-21)
+
+[Full Changelog](https://github.com/Linkurious/angular-performance/compare/0.0.2...0.0.3)
+
+**Implemented enhancements:**
+
+- Remove console.log from the inspector.js [\#11](https://github.com/Linkurious/angular-performance/issues/11)
+
+**Fixed bugs:**
+
+- Inspector.js injected twice [\#10](https://github.com/Linkurious/angular-performance/issues/10)
+
 ## [0.0.2](https://github.com/Linkurious/angular-performance/tree/0.0.2) (2015-05-14)
 
 **Implemented enhancements:**
