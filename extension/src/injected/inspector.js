@@ -20,13 +20,9 @@
       modules: {}
     };
 
-  console.log('angular-performance - Inspector loaded into webpage');
-
   if (document.readyState === 'complete'){
-    console.log('Ready state complete');
     detectAngular();
   } else {
-    console.log('Ready state not complete');
     window.onload(detectAngular)
   }
 
@@ -83,8 +79,6 @@
    * Function to set up all listeners and data mining tools
    */
   function bootstrapInspector(){
-
-    console.log('inspector.js - bootstrapping application');
 
     _angularInjector = angular.element(document.querySelector('[ng-app]')).injector().get;
 
@@ -404,8 +398,6 @@
         }
       })
     });
-
-    console.log('Module: ' + moduleName + ' successfully instrumented');
   }
 
   /**
