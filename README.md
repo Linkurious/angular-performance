@@ -7,8 +7,10 @@
 [![Screenshot](screenshot.png)](screenshot.png)
 
 This is a chrome extension aimed at monitoring angular application performance.
-
 Tested with: angular 1.2.28 and 1.3.15
+
+Because of how Angular 1.x is structured, some key elements needs to be monitored during developement to assess an application performance. This extension provides realtime monitoring charts of the number of watchers, digest timing and digest rate. You also get the digest timing distribution so that you can make out exceptionally long digest timing from more recursive paterns and all realtime data are linked to events so that you can determine which actions changed the application performances. Finally, you can time services method and count their execution to determine the ones that have the more impact on the running time of your app. 
+
 
 ## Build
 
