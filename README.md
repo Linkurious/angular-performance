@@ -8,7 +8,7 @@
 
 This is a chrome extension aimed at monitoring angular application performance.
 
-Tested with: angular 1.2.28
+Tested with: angular 1.2.28 and 1.3.15
 
 ## Build
 
@@ -27,13 +27,17 @@ $ npm run build
 ```
 
 ## Install
+###From the Chrome Web Store
+[WebStore Link](https://chrome.google.com/webstore/detail/angular-performance/hejbpbhdhhchmmcgmccpnngfedalkmkm)
 
-* Clone the repo
+### Manual
+* Clone the repository
+* **(Optional)** Switch to the develop git branch (Latest version)
+* Build the extension (see above)
 * Go into the Chrome main menu -> more tools -> extension 
 * Enable developer mode
-* Build the extension
 * Load unpacked extension
-* select the `extension` folder
+* select the `extension` folder of this repository
 
 ## Features
 
@@ -49,6 +53,7 @@ $ npm run build
 * FPS rendering monitoring
 * Scopes inspection (respective value and digesting time)
 * Dependency analysis
+* Back up collected data on a remote server
 
 ## License
 See [LICENSE](LICENSE) file.
