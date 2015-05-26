@@ -1,4 +1,4 @@
-#Angular-performance - alpha
+#Angular-performance
 
 [![Codacy Badge](https://www.codacy.com/project/badge/1ae19e8ddd704a7bab46537588224099)](https://www.codacy.com/app/nikel092_2742/angular-performance)
 [![Dependency Status](https://david-dm.org/Linkurious/angular-performance.svg)](https://david-dm.org/Linkurious/angular-performance)
