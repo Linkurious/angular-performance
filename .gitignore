@@ -17,3 +17,4 @@ log-test.txt
 extension/src/panel/panel.js
 extension/src/vendors/metisMenu.min.js
 extension/src/vendors/bootstrap.min.js
+*.zip
