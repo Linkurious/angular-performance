@@ -1,6 +1,6 @@
 {
   "name": "angular-performance",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "Chrome plugin for angular performance monitoring",
   "dependencies": {
     "bootstrap": "^3.3.4",
