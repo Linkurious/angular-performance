@@ -1,5 +1,13 @@
 # Change Log
 
+## [0.0.4](https://github.com/Linkurious/angular-performance/tree/0.0.4) (2015-06-16)
+
+[Full Changelog](https://github.com/Linkurious/angular-performance/compare/0.0.3...0.0.4)
+
+**Merged pull requests:**
+
+- Added support for data-ng-app [\#12](https://github.com/Linkurious/angular-performance/pull/12) ([Russe11](https://github.com/Russe11))
+
 ## [0.0.3](https://github.com/Linkurious/angular-performance/tree/0.0.3) (2015-05-21)
 
 [Full Changelog](https://github.com/Linkurious/angular-performance/compare/0.0.2...0.0.3)
