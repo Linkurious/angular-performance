@@ -80,7 +80,7 @@
    */
   function bootstrapInspector(){
 
-    _angularInjector = angular.element(document.querySelector('[ng-app]')).injector().get;
+    _angularInjector = angular.element(document.querySelector('[ng-app],[data-ng-app]')).injector().get;
 
     instrumentDigest();
     initWatcherCount();
