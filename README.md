@@ -1,4 +1,4 @@
-#Angular-performance - alpha
+#Angular-performance
 
 [![Codacy Badge](https://www.codacy.com/project/badge/1ae19e8ddd704a7bab46537588224099)](https://www.codacy.com/app/nikel092_2742/angular-performance)
 [![Dependency Status](https://david-dm.org/Linkurious/angular-performance.svg)](https://david-dm.org/Linkurious/angular-performance)
@@ -7,11 +7,25 @@
 [![Screenshot](screenshot.png)](screenshot.png)
 
 This is a chrome extension aimed at monitoring angular application performance.
-
 Tested with: angular 1.2.28 and 1.3.15
 
-## Build
+Because of how Angular 1.x is structured, some key elements needs to be monitored during developement to assess an application performance. This extension provides realtime monitoring charts of the number of watchers, digest timing and digest rate. You also get the digest timing distribution so that you can make out exceptionally long digest timing from more recursive paterns and all realtime data are linked to events so that you can determine which actions changed the application performances. Finally, you can time services method and count their execution to determine the ones that have the more impact on the running time of your app. 
 
+## Install
+###From the Chrome Web Store
+[WebStore Link](https://chrome.google.com/webstore/detail/angular-performance/hejbpbhdhhchmmcgmccpnngfedalkmkm)
+
+### Manual
+* Clone the repository
+* **(Optional)** Switch to the develop git branch (Latest version)
+* Build the extension (see below)
+* Go into the Chrome main menu -> more tools -> extension 
+* Enable developer mode
+* Load unpacked extension
+* select the `extension` folder of this repository
+
+
+## Build
 ### Requirements
 * Node
 * Npm
@@ -25,19 +39,6 @@ To build the extension you have to run a few commands
 $ npm install
 $ npm run build
 ```
-
-## Install
-###From the Chrome Web Store
-[WebStore Link](https://chrome.google.com/webstore/detail/angular-performance/hejbpbhdhhchmmcgmccpnngfedalkmkm)
-
-### Manual
-* Clone the repository
-* **(Optional)** Switch to the develop git branch (Latest version)
-* Build the extension (see above)
-* Go into the Chrome main menu -> more tools -> extension 
-* Enable developer mode
-* Load unpacked extension
-* select the `extension` folder of this repository
 
 ## Features
 
