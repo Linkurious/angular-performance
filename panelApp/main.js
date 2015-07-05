@@ -6,12 +6,12 @@ window.jQuery = window.$ = require('jquery');
 var _ = require('lodash');
 
 var
-  ServicePanelCtrl = require('./servicePanelController'),
-  Registry = require('./registry'),
+  ServicePanelCtrl = require('./panels/servicePanelController'),
+  Registry = require('./models/registry'),
   TabsHandler = require('./tabHandler'),
-  Plots = require('./plots'),
-  InstantMetrics = require('./instantMetrics'),
-  SettingsPanelCtrl = require('./settingsPanelController'),
+  Plots = require('./panels/plots'),
+  InstantMetrics = require('./panels/instantMetrics'),
+  SettingsPanelCtrl = require('./panels/settingsPanelController'),
   backgroundPageConnection = chrome.runtime.connect({
     name: "angular-performance-panel"
   });
