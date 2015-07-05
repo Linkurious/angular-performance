@@ -11,6 +11,7 @@ var
   TabsHandler = require('./tabHandler'),
   Plots = require('./plots'),
   InstantMetrics = require('./instantMetrics'),
+  SettingsPanelCtrl = require('./settingsPanelController'),
   backgroundPageConnection = chrome.runtime.connect({
     name: "angular-performance-panel"
   });
@@ -23,7 +24,10 @@ var
 InstantMetrics.initRegistry(registry);
 Plots.initRegistry(registry);
 
-var tabs = new TabsHandler(Plots);
+var
+  tabs = new TabsHandler(Plots),
+  // For now the reference of the settings is not used by the other services but it could in the future.
+  settingsPanelCtrl = new SettingsPanelCtrl(registry, Plots, tabs);
 
 // Listen to the message sent by the injected script
 backgroundPageConnection.onMessage.addListener(function(message){
@@ -126,7 +130,7 @@ Plots.setMainPlotsSettings([
   }
 ]);
 
-Plots.buildMainPlots(registry);
+Plots.buildMainPlots();
 tabs.bindTabs();
 
 

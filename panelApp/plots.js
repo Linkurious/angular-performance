@@ -59,8 +59,19 @@ Plots.buildMainPlots = function(){
 
   _.forEach(_mainPlotsSettings, function(plot){
 
+    $('#' + plot.id).empty();
+
+    if (plot.eventTimelineId)
+      $('#' + plot.eventTimelineId).empty();
+    if (plot.rangeSliderId)
+      $('#' + plot.rangeSliderId).empty();
+
+
     // Controls of the start en end date
     if (plot.pauseButton && plot.liveButton) {
+      $(plot.liveButton).unbind();
+      $(plot.pauseButton).unbind();
+
       $(plot.liveButton).click(function () {
         plot.live = true;
         $(plot.pauseButton).removeClass('active');
@@ -84,7 +95,7 @@ Plots.buildMainPlots = function(){
       series: [
         {
           color: _COLOR_PALETTE.color(),
-          data:  plot.dataFunction(),
+          data: plot.dataFunction(),
           name: plot.plotName
         }
       ]
@@ -146,6 +157,21 @@ Plots.buildMainPlots = function(){
 
     plot.updateFunction();
   });
+};
+
+/**
+ * Cleans up annotations registered in the event bar .
+ */
+Plots.clearAnnotations = function(){
+  _.forEach(_mainPlotsSettings, function(plot){
+    if (plot.annotator) {
+      _.forEach(Object.keys(plot.annotator.data), function(timestamp){
+        delete plot.annotator.data[timestamp];
+      })
+    }
+  });
+
+  $('.annotation').remove();
 };
 
 module.exports = Plots;

@@ -33,6 +33,33 @@ function Registry(){
     _locationMap = {},
     _locationCount = 0;
 
+  // ------------------------------------------------------------------------------------------
+  //                                    Registry helpers
+  // ------------------------------------------------------------------------------------------
+
+  /**
+   * Cleans up all data of the registry to start fresh. We clean the existing object to keep
+   * the references so that we don't have to re instantiate Rickshaw plots.
+   */
+  self.clearData = function(){
+
+    _.forEach([_digestTiming, _events, _watcherCount, _digestTimingDistributionPlotData,
+      _digestTimingPlotData, _digestRatePlotData, _watcherCountPlotData,
+      _watcherCountDistributionPlotData], function(array){
+
+      for (var i = 0, len = array.length; i <len ; i++){
+        array.shift();
+      }
+    });
+
+    _.forEach([_digestTimingDistribution, _watcherCountDistribution, _functionTimings, _locationMap], function(obj){
+      _.forEach(Object.keys(obj), function(key){
+        delete obj[key];
+      })
+    });
+
+    _locationCount = 0;
+  };
 
   // ------------------------------------------------------------------------------------------
   //                                     Angular Digest
@@ -238,8 +265,16 @@ function Registry(){
       start;
 
     if (chart === 'digest-time-chart'){
+      if (_digestTimingPlotData.length === 0){
+        return data;
+      }
+
       start = _digestTimingPlotData[_digestTimingPlotData.length - 1].x;
     } else if (chart === 'digest-rate-chart'){
+      if (_digestRatePlotData.length === 0){
+        return data;
+      }
+
       start = _digestRatePlotData[_digestRatePlotData.length - 1].x;
     }
 

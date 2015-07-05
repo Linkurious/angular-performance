@@ -13,15 +13,17 @@ function tabHandler(plots){
 
   var self = this;
 
-  var
-    _TABS = {
+
+  self.TABS = {
       HOME: 'homeTab',
       SCOPE: 'scopeTab',
-      TIMING: 'detailTimingTab'
-    },
+      TIMING: 'detailTimingTab',
+      SETTINGS: 'settingsTab'
+    };
 
+  var
     _plots = plots,
-    _currentTab = _TABS.HOME;
+    _currentTab = self.TABS.HOME;
 
   /**
    * This method allows navigation through tabs in the panel.
@@ -33,11 +35,11 @@ function tabHandler(plots){
     if (tabName === _currentTab ){
       return;
     }
-    if (tabName !== _TABS.HOME && tabName !== _TABS.SCOPE && tabName !== _TABS.TIMING) {
+    if (!_.includes(_.values(self.TABS), tabName)) {
       throw new Error('tabHandler.js - Unrecognized tab name');
     }
 
-    if (_currentTab === _TABS.HOME){
+    if (_currentTab === self.TABS.HOME){
       _plots.stopMainPlotRendering();
     }
 
@@ -46,7 +48,7 @@ function tabHandler(plots){
     $('#' + tabName).show();
     $('#' + tabName + 'Button').addClass('active');
 
-    if (tabName === _TABS.HOME){
+    if (tabName === self.TABS.HOME){
       _plots.startMainPlotRendering();
     }
 
@@ -57,9 +59,9 @@ function tabHandler(plots){
    * Binds the tabs to the the click listeners.
    */
   self.bindTabs = function(){
-    _.forEach(Object.keys(_TABS), function(TAB){
-      $('#' + _TABS[TAB] + 'Button').click(function(){
-        self.goToTab(_TABS[TAB]);
+    _.forEach(Object.keys(self.TABS), function(TAB){
+      $('#' + self.TABS[TAB] + 'Button').click(function(){
+        self.goToTab(self.TABS[TAB]);
       })
     });
   };
