@@ -80,6 +80,7 @@ Plots.setMainPlotsSettings([
     dataFunction: registry.getDigestTimingPlotData,
     pauseButton: '#pauseDigestTime',
     liveButton: '#liveDigestTime',
+    exportButton: '#exportDigestTime',
     live: true
   },
   {

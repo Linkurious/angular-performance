@@ -15,6 +15,5 @@ neo4J-cleanup-addon.iml
 log-test.txt
 
 extension/src/panel/panel.js
-extension/src/vendors/metisMenu.min.js
-extension/src/vendors/bootstrap.min.js
+extension/src/vendors/*.min.js
 *.zip
