@@ -21,9 +21,11 @@
     };
 
   if (document.readyState === 'complete'){
-    detectAngular();
+    setTimeout(detectAngular, 0);
   } else {
-    window.onload(detectAngular)
+    window.onload(function() {
+      setTimeout(detectAngular, 0);
+    });
   }
 
   /**
