@@ -23,9 +23,9 @@
   if (document.readyState === 'complete'){
     setTimeout(detectAngular, 0);
   } else {
-    window.onload(function() {
+    window.onload = function() {
       setTimeout(detectAngular, 0);
-    });
+    };
   }
 
   /**

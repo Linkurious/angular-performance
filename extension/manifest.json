@@ -10,6 +10,11 @@
     "128": "images/AngularJS-Shield-small.png"
   },
   "devtools_page": "src/devtools/devtools.html",
+  "content_scripts": [{
+    "matches": ["<all_urls>"],
+    "js": ["src/injected/content-script.js"],
+    "run_at": "document_end"
+  }],
   "page_action": {
     "default_icon": {
       "19": "images/AngularJS-Shield-small.png",
@@ -21,7 +26,7 @@
     "scripts": ["src/background.js"],
     "persistent": false
   },
-  "permissions": ["http://*/*", "https://*/*", "tabs", "webNavigation"],
+  "permissions": ["<all_urls>", "tabs", "webNavigation"],
   "web_accessible_resources": [
     "src/injected/inspector.js"
   ]

@@ -48,6 +48,6 @@ backgroundPageConnection.postMessage({
 });
 
 backgroundPageConnection.postMessage({
-  task: 'injectContentScript',
+  task: 'checkInjectedContentScript',
   tabId: chrome.devtools.inspectedWindow.tabId
 });

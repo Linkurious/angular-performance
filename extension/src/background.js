@@ -2,6 +2,7 @@
 
 // Mapping of the connections between the devtools and the tabs
 var
+  angularDetected = {}, // key tabId value, if angular was detected in this tab
   contentScriptConnections = {},
   devToolsConnections = {},
   panelConnections = {};
@@ -29,11 +30,12 @@ chrome.runtime.onConnect.addListener(function(port){
           console.log('devtools.js - ' + message.text);
         }
         break;
-      case 'injectContentScript':
-        console.log('devtools.js - Injecting content script');
-        chrome.tabs.executeScript(message.tabId, {
-          file: 'src/injected/content-script.js'
-        });
+      case 'checkInjectedContentScript':
+          console.log(message.tabId)
+          if (angularDetected[message.tabId])
+            devToolsConnections[message.tabId].postMessage({
+              task: "initDevToolPanel"
+            });
         break;
       default:
         console.log('devtools.js - Received unknown task: ' + message.task);
@@ -69,12 +71,14 @@ chrome.runtime.onConnect.addListener(function(port){
         contentScriptConnections[tabId] = port;
       }
 
-      if (message.task === 'initDevToolPanel' && tabId in devToolsConnections) {
+      if (message.task === 'initDevToolPanel' && !devToolsConnections[tabId]) {
+        angularDetected[tabId] = true;
+      } else if (message.task === 'initDevToolPanel' && devToolsConnections[tabId]) {
         devToolsConnections[tabId].postMessage(message);
       } else if (tabId in panelConnections) {
         panelConnections[tabId].postMessage(message);
       } else {
-        console.log('background.js - Tab not found in connection list.', sender.tab.id, panelConnections);
+        //console.log('background.js - Tab not found in connection list.', sender.tab.id, panelConnections);
       }
     } else {
       console.log('background.js - sender.tab not defined.');
@@ -167,16 +171,6 @@ chrome.runtime.onConnect.addListener(function(port){
           break;
         }
       }
-    });
-  }
-});
-
-// We want to inject the content-script again if the page is refreshed
-chrome.tabs.onUpdated.addListener(function(tabId, changeInfo){
-  // The page has to be completely loaded before we inject the content script inside.
-  if (changeInfo.status === 'complete' && panelConnections[tabId] && !contentScriptConnections[tabId]) {
-    chrome.tabs.executeScript(tabId, {
-      file: 'src/injected/content-script.js'
     });
   }
 });
