@@ -12,6 +12,7 @@
     "rickshaw": "^1.5.1"
   },
   "devDependencies": {
+    "browserify": "11.0.1",
     "clean-css": "^3.1.9",
     "rework-npm-cli": "^0.1.1",
     "uglify-js": "^2.4.19"
