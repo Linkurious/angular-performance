@@ -73,7 +73,19 @@
         }
       });
 
-      bootstrapInspector();
+      try {
+        // Check if angular is running in production mode. If it is, reload with correct debugging information
+        _angularInjector = angular.element(document.querySelector('[ng-app],[data-ng-app]')).injector().get;
+        Object.getPrototypeOf(getRootScope());
+      } catch(e){
+        if (e instanceof TypeError) {
+          angular.reloadWithDebugInfo();
+        } else {
+          console.error(e)
+        }
+      } finally {
+        bootstrapInspector();
+      }
     }
   }
 
@@ -81,9 +93,6 @@
    * Function to set up all listeners and data mining tools
    */
   function bootstrapInspector(){
-
-    _angularInjector = angular.element(document.querySelector('[ng-app],[data-ng-app]')).injector().get;
-
     instrumentDigest();
     initWatcherCount();
   }
