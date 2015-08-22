@@ -89,7 +89,7 @@ function generateXPath(element) {
   }
 }
 
-log('Content Script loaded');
+log('Loaded');
 
 // Listen for messages from the current page and send then to the background script for dispatch
 window.addEventListener('message', function(event) {
@@ -115,37 +115,46 @@ window.addEventListener('message', function(event) {
   backgroundPageConnection.postMessage(message);
 }, false);
 
-// Add Listeners for all user events to that they can be captured
-USER_EVENTS.forEach(function(eventType){
-  document.addEventListener(eventType, function(event){
-    backgroundPageConnection.postMessage({
-      source: 'angular-performance',
-      task: 'registerEvent',
-      data: {
-        timestamp: Date.now(),
-        event: {
-          type: event.type,
-          targetDOMPath: generateXPath(event.target)
-        }
-      }
-    });
-  });
-});
-
-
-// Add injected script to the page
-var script = document.createElement('script');
-script.type = 'text/javascript';
-script.id = 'angular-performance-inspector';
-script.src = chrome.extension.getURL('src/injected/inspector.js');
-document.head.appendChild(script);
-
 backgroundPageConnection.onMessage.addListener(function(message){
 
   if (message.source){
-    log('Content-script.js - source already defined');
+    log('Source already defined');
+  }
+
+  if (message.task === 'addInspector'){
+    log('Add Inspector');
+
+    // Add Listeners for all user events to that they can be captured
+    USER_EVENTS.forEach(function(eventType){
+      document.addEventListener(eventType, function(event){
+        backgroundPageConnection.postMessage({
+          source: 'angular-performance',
+          task: 'registerEvent',
+          data: {
+            timestamp: Date.now(),
+            event: {
+              type: event.type,
+              targetDOMPath: generateXPath(event.target)
+            }
+          }
+        });
+      });
+    });
+
+
+    // Add injected script to the page
+    var script = document.createElement('script');
+    script.type = 'text/javascript';
+    script.id = 'angular-performance-inspector';
+    script.src = chrome.extension.getURL('src/injected/inspector.js');
+    document.head.appendChild(script);
+    return;
   }
 
   message.source = 'angular-performance';
   window.postMessage(message, '*');
+});
+
+backgroundPageConnection.postMessage({
+  task: 'checkDevToolsStatus'
 });

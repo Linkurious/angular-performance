@@ -2,7 +2,6 @@
 
 // Mapping of the connections between the devtools and the tabs
 var
-  angularDetected = {}, // key tabId value, if angular was detected in this tab
   contentScriptConnections = {},
   devToolsConnections = {},
   panelConnections = {};
@@ -20,25 +19,23 @@ chrome.runtime.onConnect.addListener(function(port){
 
     switch (message.task){
       case 'init':
-        console.log('Dev Tools listener initialized '+message.tabId);
+        console.log('Background - Dev Tools listener initialized ' + message.tabId);
         devToolsConnections[message.tabId] = port;
+        if (contentScriptConnections[message.tabId]){
+          contentScriptConnections[message.tabId].postMessage({
+            task: 'addInspector'
+          });
+        }
         break;
       case 'log':
         if (message.obj) {
-          console.log('devtools.js - ' + message.text, message.obj);
+          console.log('Devtools - ' + message.text, message.obj);
         } else {
-          console.log('devtools.js - ' + message.text);
+          console.log('Devtools - ' + message.text);
         }
         break;
-      case 'checkInjectedContentScript':
-          console.log(message.tabId)
-          if (angularDetected[message.tabId])
-            devToolsConnections[message.tabId].postMessage({
-              task: "initDevToolPanel"
-            });
-        break;
       default:
-        console.log('devtools.js - Received unknown task: ' + message.task);
+        console.log('Background - Devtools listener received an unknown task: ' + message.task);
     }
     return true;
   };
@@ -56,9 +53,9 @@ chrome.runtime.onConnect.addListener(function(port){
 
     if(message.task === 'log'){
       if (message.obj) {
-        console.log('content-script.js - ' + message.text, message.obj);
+        console.log('Content-script - ' + message.text, message.obj);
       } else {
-        console.log('content-script.js - ' + message.text);
+        console.log('Content-script - ' + message.text);
       }
       return;
     }
@@ -67,21 +64,19 @@ chrome.runtime.onConnect.addListener(function(port){
 
       var tabId = sender.tab.id;
 
-      if (!contentScriptConnections[tabId]){
-        contentScriptConnections[tabId] = port;
-      }
-
-      if (message.task === 'initDevToolPanel' && !devToolsConnections[tabId]) {
-        angularDetected[tabId] = true;
-      } else if (message.task === 'initDevToolPanel' && devToolsConnections[tabId]) {
+      if (message.task === 'initDevToolPanel' && devToolsConnections[tabId]) {
         devToolsConnections[tabId].postMessage(message);
+      } else if (message.task === 'checkDevToolsStatus' && devToolsConnections[tabId]) {
+        contentScriptConnections[tabId].postMessage({
+          task: 'addInspector'
+        });
       } else if (tabId in panelConnections) {
         panelConnections[tabId].postMessage(message);
       } else {
         //console.log('background.js - Tab not found in connection list.', sender.tab.id, panelConnections);
       }
     } else {
-      console.log('background.js - sender.tab not defined.');
+      console.log('Background - sender.tab not defined.');
     }
     return true;
   };
@@ -94,7 +89,7 @@ chrome.runtime.onConnect.addListener(function(port){
    */
   var panelListener = function(message){
     if (message.task === 'init'){
-      console.log('background.js - panel listener initialized ', message.tabId);
+      console.log('Background - Panel listener initialized ', message.tabId);
       panelConnections[message.tabId] = port
 
     } else if (message.task === 'sendTaskToInspector') {
@@ -102,9 +97,9 @@ chrome.runtime.onConnect.addListener(function(port){
 
     } else if (message.task === 'log'){
       if (message.obj) {
-        console.log('panel.js - ' + message.text, message.obj);
+        console.log('Panel - ' + message.text, message.obj);
       } else {
-        console.log('panel.js - ' + message.text);
+        console.log('Panel - ' + message.text);
       }
     }
   };
@@ -114,7 +109,7 @@ chrome.runtime.onConnect.addListener(function(port){
    */
 
   if (port.name === 'devtools-page'){
-    console.log('background.js - devtools listener setup');
+    console.log('Background - Devtools listener setup');
 
     // add the listener
     port.onMessage.addListener(devToolsListener);
@@ -135,8 +130,14 @@ chrome.runtime.onConnect.addListener(function(port){
 
   } else if (port.name === 'content-script'){
 
-    console.log('background.js - content script listener setup');
+    console.log('Background - content script listener setup');
     port.onMessage.addListener(contentScriptListener);
+
+    // If the devtools are already opened for this tab, and this is the content-script has just been injected
+    // we also want to add the inspector to the page
+    if (port.sender){
+      contentScriptConnections[port.sender.tab.id] = port;
+    }
 
     port.onDisconnect.addListener(function(){
       port.onMessage.removeListener(contentScriptListener);
@@ -165,8 +166,7 @@ chrome.runtime.onConnect.addListener(function(port){
           delete panelConnections[tabs[i]];
           // On panel closing, clean up the tab from all wrapped functions and removes the injector.js
           contentScriptConnections[tabs[i]].postMessage({
-            task: 'cleanUpInspectedApp',
-            source: 'angular-performance'
+            task: 'cleanUpInspectedApp'
           });
           break;
         }

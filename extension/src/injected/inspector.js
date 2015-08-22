@@ -34,10 +34,7 @@
   function detectAngular(){
     if (typeof angular !== 'undefined') {
 
-      window.postMessage({
-        task: 'initDevToolPanel',
-        source: 'angular-performance-inspector'
-      }, '*');
+      sendTask('initDevToolPanel');
 
       // We listen for async instrumentation instructions
       window.addEventListener('message', function(event){

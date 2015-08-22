@@ -1,5 +1,7 @@
 'use strict';
 
+var _panelBuilt = false;
+
 // Create a connection to the background page
 var backgroundPageConnection = chrome.runtime.connect({
   name: "devtools-page"
@@ -27,27 +29,19 @@ function log(message, obj){
 backgroundPageConnection.onMessage.addListener(function (message) {
 
   // We only want to build the panel if angular was detected in the page
-  if (message.task === 'initDevToolPanel'){
+  if (message.task === 'initDevToolPanel' && !_panelBuilt){
     log('building panel');
     chrome.devtools.panels.create(
       'Angular',
       'images/AngularJS-Shield-small.png',
       'src/panel/panel.html'
     );
-    // Once the panel is built, this is not useful anymore, we disconnect to free resources
-    backgroundPageConnection.disconnect();
-  } else {
-    log('Unknown task ', message.task);
+    _panelBuilt = true;
   }
 });
 
 // Tell the background script to include this into the dispatch
 backgroundPageConnection.postMessage({
   task: 'init',
-  tabId: chrome.devtools.inspectedWindow.tabId
-});
-
-backgroundPageConnection.postMessage({
-  task: 'checkInjectedContentScript',
   tabId: chrome.devtools.inspectedWindow.tabId
 });
