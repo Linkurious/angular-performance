@@ -40,6 +40,11 @@ $ npm install
 $ npm run build
 ```
 
+## Develop
+Please follow the [Contributing](./CONTRIBUTING.md) code guidelines, we will try to review and merge your changes as quickly as possible.
+
+If need be here is an [architecture guide](http://nicolasjoseph.com/angular/chrome-extension/performance/2015/08/20/angular-performance-development-guide.html) for angular performance.
+
 ## Features
 
 ### Implemented
