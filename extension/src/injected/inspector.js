@@ -70,19 +70,25 @@
         }
       });
 
-      try {
-        // Check if angular is running in production mode. If it is, reload with correct debugging information
-        _angularInjector = angular.element(document.querySelector('[ng-app],[data-ng-app]')).injector().get;
-        Object.getPrototypeOf(getRootScope());
-      } catch(e){
-        if (e instanceof TypeError) {
-          angular.reloadWithDebugInfo();
-        } else {
-          console.error(e)
+
+      if (document.querySelector('[ng-app],[data-ng-app]')){
+        try {
+          // Check if angular is running in production mode. If it is, reload with correct debugging information
+          _angularInjector = angular.element(document.querySelector('[ng-app],[data-ng-app]')).injector().get;
+          Object.getPrototypeOf(getRootScope());
+        } catch(e){
+          if (e instanceof TypeError) {
+            angular.reloadWithDebugInfo();
+          } else {
+            console.error(e)
+          }
+        } finally {
+          bootstrapInspector();
         }
-      } finally {
-        bootstrapInspector();
+      } else {
+        console.log('Angular performance, ng-app and data-ng-app are not defined. At least one need to be defined.')
       }
+
     }
   }
 
