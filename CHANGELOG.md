@@ -1,7 +1,28 @@
 # Change Log
 
-## [0.0.4](https://github.com/Linkurious/angular-performance/tree/0.0.4) (2015-06-16)
+## [0.1.0](https://github.com/Linkurious/angular-performance/tree/0.1.0) (2015-08-30)
+[Full Changelog](https://github.com/Linkurious/angular-performance/compare/0.0.4...0.1.0)
 
+**Fixed bugs:**
+
+- Uncaught TypeError: Cannot read property 'get' of undefined [\#19](https://github.com/Linkurious/angular-performance/issues/19)
+- Permission Error [\#18](https://github.com/Linkurious/angular-performance/issues/18)
+- Error when running angular 1.3 in production mode [\#17](https://github.com/Linkurious/angular-performance/issues/17)
+
+**Implemented enhancements:**
+
+- Lazy injection of inspector.js file [\#22](https://github.com/Linkurious/angular-performance/issues/22)
+- How to reset all metrics and charts? [\#15](https://github.com/Linkurious/angular-performance/issues/15)
+
+**Closed issues:**
+
+- Export charts [\#14](https://github.com/Linkurious/angular-performance/issues/14)
+
+**Merged pull requests:**
+
+- Update inspector.js [\#21](https://github.com/Linkurious/angular-performance/pull/21) ([Nilanno](https://github.com/Nilanno))
+
+## [0.0.4](https://github.com/Linkurious/angular-performance/tree/0.0.4) (2015-06-16)
 [Full Changelog](https://github.com/Linkurious/angular-performance/compare/0.0.3...0.0.4)
 
 **Merged pull requests:**
@@ -9,7 +30,6 @@
 - Added support for data-ng-app [\#12](https://github.com/Linkurious/angular-performance/pull/12) ([Russe11](https://github.com/Russe11))
 
 ## [0.0.3](https://github.com/Linkurious/angular-performance/tree/0.0.3) (2015-05-21)
-
 [Full Changelog](https://github.com/Linkurious/angular-performance/compare/0.0.2...0.0.3)
 
 **Implemented enhancements:**
@@ -21,7 +41,6 @@
 - Inspector.js injected twice [\#10](https://github.com/Linkurious/angular-performance/issues/10)
 
 ## [0.0.2](https://github.com/Linkurious/angular-performance/tree/0.0.2) (2015-05-14)
-
 **Implemented enhancements:**
 
 - Clean-up inspector.js when the devtools panel is closed [\#7](https://github.com/Linkurious/angular-performance/issues/7)
@@ -29,11 +48,8 @@
 **Fixed bugs:**
 
 - Inspector.js injected twice [\#6](https://github.com/Linkurious/angular-performance/issues/6)
-
 - Fix the way the events are displayed [\#5](https://github.com/Linkurious/angular-performance/issues/5)
-
 - Chrome web store build - Module not detected on minified script [\#3](https://github.com/Linkurious/angular-performance/issues/3)
-
 - When a tab is refreshed after the devtools are opened, the extension stops recording [\#1](https://github.com/Linkurious/angular-performance/issues/1)
 
 
